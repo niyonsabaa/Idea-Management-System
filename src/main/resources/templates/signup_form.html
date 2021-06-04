@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Registration-Idea M S</title>
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+
+<body>
+	<div class="container">
+		<div>
+			<h1 class="text-center">User Registration</h1>
+		</div>
+		<div th:if="${message}">
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				<strong th:text="${message}" />
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</div>
+		<form th:action="@{/process_register}" method="POST" th:object="${user}">
+			<div class="row">
+				<div class="col">
+					<div class="form-group">
+						<label for="exampleInputEmail1">Email address</label>
+						<input type="email" class="form-control" th:field="*{email}" required>
+					</div>
+					<div class="form-group">
+						<label for="category">Prefix</label>
+						<select class="custom-select" th:field="*{prefix}" required>
+							<option th:each="prefix :${prefixs}" th:value="${prefix.id}"
+								th:text="${prefix.prefixName}" />
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="First Name">First Name</label>
+						<input type="text" class="form-control" th:field="*{firstName}" required>
+					</div>
+					<div class="form-group">
+						<label for="Last Name">Last Name</label>
+						<input type="text" class="form-control" th:field="*{lastName}" required>
+					</div>
+					<!--<div class="form-group">
+						<label for="Last Name">Username</label>
+						<input type="text" class="form-control" th:field="*{username}" required>
+					</div>-->
+
+				</div>
+				<div class="col">
+
+					<div class="form-group">
+						<label for="category">Postfix</label>
+						<select class="custom-select" th:field="*{postfix}">
+							<option th:each="postfix :${postfixs}" th:value="${postfix.id}"
+								th:text="${postfix.postfixName}" />
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="category">Gender</label>
+						<select class="custom-select" th:field="*{gender}" required>
+							<option th:each="gender :${genders}" th:value="${gender.id}"
+								th:text="${gender.genderName}" />
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="category">Country</label>
+						<select class="custom-select" th:field="*{countryId}" required>
+							<option th:each="country :${countries}" th:value="${country.id}"
+								th:text="${country.countryCode+' '+country.countryName}" />
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">Password</label>
+						<input type="password" class="form-control" th:field="*{password}" required>
+					</div>
+					
+					<div class="row">
+						
+						<div class="col-6 col-sm-3"><button type="submit" class="btn btn-primary">Register</button>
+						</div>
+						<div class="col-9 col-sm-3">
+							<h6><a th:href="@{/}"> Have an account? click here to login<h6></a>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</body>
+
+</html>
