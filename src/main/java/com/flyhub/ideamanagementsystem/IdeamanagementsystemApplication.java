@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
 //(exclude = {DataSourceAutoConfiguration.class })
 @EnableJpaAuditing
-//@MapperScan(value = "com.iamapsycho.dao")
 public class IdeamanagementsystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IdeamanagementsystemApplication.class, args);		

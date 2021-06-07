@@ -69,5 +69,5 @@ public class UserService {
 		User user = new User(email,encodedPassword,firstName,lastName,gender,countryId,postfix,prefix,username);
 		User result = repo.save(user);
 		return result;
-	}
+	}	
 }
