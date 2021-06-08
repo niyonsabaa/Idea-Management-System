@@ -4,7 +4,8 @@ Vue.use(Vuex)
 
 const state = {
   sidebarShow: 'responsive',
-  sidebarMinimize: false
+  sidebarMinimize: false,
+  token:''
 }
 
 const mutations = {
@@ -12,12 +13,18 @@ const mutations = {
     const sidebarOpened = [true, 'responsive'].includes(state.sidebarShow)
     state.sidebarShow = sidebarOpened ? false : 'responsive'
   },
+
   toggleSidebarMobile (state) {
     const sidebarClosed = [false, 'responsive'].includes(state.sidebarShow)
     state.sidebarShow = sidebarClosed ? true : 'responsive'
   },
+
   set (state, [variable, value]) {
     state[variable] = value
+  },
+
+  setToken(state, currentToken){
+    state.token = currentToken
   }
 }
 

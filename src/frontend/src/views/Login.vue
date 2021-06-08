@@ -6,6 +6,7 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
+                <p>{{this.$store.state.token}}</p>                
                 <CForm @submit="login">
                   <h1>Login</h1>
                   <p class="text-muted">Log In to your account</p>
@@ -39,8 +40,8 @@
                         >Forgot password?</CButton
                       >
 
-                      <CButton color="link" class="d-lg-none"
-                        >Register now!</CButton
+                      <CButton color="link" class="d-lg-none"                       
+                      >Register now!</CButton
                       >
                     </CCol>
                   </CRow>
@@ -59,7 +60,7 @@
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </p>
-                <CButton color="light" variant="outline" size="lg">
+                <CButton color="light" @click="testState" variant="outline" size="lg">
                   Register Now!
                 </CButton>
               </CCardBody>
@@ -73,22 +74,8 @@
 
 <script>
 
-var store = {
-  debug: true,
-  state: {
-    message: 'Hello! we are testing the store'
-  },
-  setMessageAction (newValue) {
-    if (this.debug) console.log('setMessageAction triggered with', newValue)
-    this.state.message = newValue
-  },
-  clearMessageAction () {
-    if (this.debug) console.log('clearMessageAction triggered')
-    this.state.message = ''
-  }
-}
-
 export default {
+
   name: "Login",
   data() {
     return {
@@ -96,6 +83,9 @@ export default {
       password: "",
     };
   },
+
+
+
   methods: {
     login() {
       const requestOptions = {
@@ -110,9 +100,16 @@ export default {
       fetch(`http://localhost:8080/authenticate`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          alert(data.token);
+          this.$store.commit('setToken',data.token)
+          //alert(data.token);
         });
     },
+
+    testState(){
+      //alert("we are testing the state")
+      this.$store.commit('setToken','token Changed')
+    }
+
   },
 };
 </script>
