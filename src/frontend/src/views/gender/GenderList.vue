@@ -4,7 +4,7 @@
       <template>
         <div v-if="updateAlert">
           <CAlert color="primary" closeButton>
-           <h4> Gender Record # {{genderId}} , successfully updated.</h4>
+            <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
           </CAlert>
         </div>
         <CCardBody>
@@ -60,7 +60,7 @@
                     </div>
                   </CForm>
                   <template #footer>
-                    <br/>
+                    <br />
                   </template>
                 </CModal>
               </td>
@@ -90,7 +90,7 @@ export default {
   name: "GenderList",
   data() {
     return {
-      items: "",
+      items: [],
       fields,
       genderModal: false,
       genderId: "",
@@ -99,9 +99,19 @@ export default {
     };
   },
   mounted() {
-    fetch("api/v1/gender")
+    const myHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization:
+        "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGV4bnNhYmEiLCJleHAiOjE2MjMwODI1NjksImlhdCI6MTYyMzA2NDU2OX0.-e3VjnBgR8g-xiAVgxqeVPXv-OgnHQ3FE8KdUGbcrtwAR67AuTYQ3AvBIxYS4xCHH-aFrFUkZVXXQ30Hd6Qp3g",
+    });
+
+    fetch("http://localhost:8080/api/v1/gender", {
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
+        //alert(JSON.stringify(data))
         this.items = data;
       });
   },
@@ -129,10 +139,10 @@ export default {
       this.genderModal = false;
       fetch(`api/v1/gender/${this.genderId}`, requestOptions)
         .then((response) => response.json())
-        .then((data) =>{ 
+        .then((data) => {
           this.genderId = data.id;
           this.updateAlert = true;
-          });
+        });
     },
   },
 };

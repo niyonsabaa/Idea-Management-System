@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.flyhub.ideamanagementsystem.config.JwtTokenUtil;
 import com.flyhub.ideamanagementsystem.DaO.JwtRequest;
@@ -18,6 +19,7 @@ import com.flyhub.ideamanagementsystem.service.JwtUserDetailsService;
 
 @RestController
 @CrossOrigin
+@RequestMapping("/authenticate")
 public class JwtAuthenticationController {
 	
 	 @Autowired	 
@@ -29,7 +31,7 @@ public class JwtAuthenticationController {
 	@Autowired
 	private JwtUserDetailsService userDetailsService;
 	
-	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+	@PostMapping
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
