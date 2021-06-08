@@ -19,6 +19,7 @@
             </h4>
           </CAlert>
         </div>
+
         <CCardBody>
           <CDataTable
             :items="items"
@@ -253,19 +254,33 @@ export default {
     };
   },
   mounted() {
-    fetch("api/v1/ideas")
+    const myHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + this.$store.state.token,
+    });
+
+    fetch("http://localhost:8080/api/v1/ideas", {
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.items = data;
       });
 
-    fetch("api/v1/category")
+    fetch("http://localhost:8080/api/v1/category", {
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.categoryData = data;
       });
 
-    fetch("api/v1/priority")
+    fetch("http://localhost:8080/api/v1/priority", {
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.priorityData = data;
@@ -274,11 +289,15 @@ export default {
 
   methods: {
     deleteIdea(item) {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
       const requestOptions = {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
       };
-      fetch(`api/v1/ideas/${item.id}`, requestOptions);
+      fetch(`http://localhost:8080/api/v1/ideas/${item.id}`, requestOptions);
     },
 
     loadIdeaModel(item) {
@@ -301,9 +320,13 @@ export default {
     },
 
     updateIdea() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
       const requestOptions = {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
         body: JSON.stringify({
           dateOfSubmission: this.submissionDate,
           ideaDescription: this.description,
@@ -314,7 +337,7 @@ export default {
       };
       this.ideaModal = false;
       fetch(
-        `api/v1/ideas/${this.ideaId}/?userId=1&categoryId=${this.category}&priorityId=${this.priority}`,
+        `http://localhost:8080/api/v1/ideas/${this.ideaId}/?userId=1&categoryId=${this.category}&priorityId=${this.priority}`,
         requestOptions
       )
         .then((response) => response.json())
@@ -325,15 +348,22 @@ export default {
     },
 
     saveNote() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
         body: JSON.stringify({
           noteContent: this.content,
         }),
       };
       this.addNotesModal = false;
-      fetch(`api/v1/notes?ideaId=${this.ideaId}`, requestOptions)
+      fetch(
+        `http://localhost:8080/api/v1/notes?ideaId=${this.ideaId}`,
+        requestOptions
+      )
         .then((response) => response.json())
         .then((data) => {
           this.noteId = data.id;
@@ -342,14 +372,19 @@ export default {
     },
 
     saveAttachment() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
       axios({
-        url: "api/v1/attachments",
+        url: "http://localhost:8080/api/v1/attachments",
         method: "POST",
+        headers: myHeaders,
         data: this.formData,
-      }).then((response) => {        
+      }).then((response) => {
         this.addAttachmentAlert = true;
-        this.attachmentId = response.data.id; 
-        this.attachmentModal = false;       
+        this.attachmentId = response.data.id;
+        this.attachmentModal = false;
       });
     },
 

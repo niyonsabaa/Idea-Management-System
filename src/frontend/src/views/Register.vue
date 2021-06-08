@@ -140,25 +140,41 @@ export default {
     };
   },
   mounted() {
-    fetch("api/v1/postfix")
+    const myHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + this.$store.state.token,
+    });
+    fetch("http://localhost:8080/api/v1/postfix",{
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.postfixData = data;
       });
 
-    fetch("api/v1/prefix")
+    fetch("http://localhost:8080/api/v1/prefix",{
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.prefixData = data;
       });
 
-    fetch("api/v1/countries")
+    fetch("http://localhost:8080/api/v1/countries",{
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.countryData = data;
       });
 
-    fetch("api/v1/gender")
+    fetch("http://localhost:8080/api/v1/gender",{
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.genderData = data;
@@ -166,9 +182,13 @@ export default {
   },
   methods: {
     registerUser() {
+      const myHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + this.$store.state.token,
+    });
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
         body: JSON.stringify({
           email: this.email,
           password: this.password,
@@ -180,7 +200,7 @@ export default {
           prefix: this.prefix,
         }),
       };
-      fetch("api/v1/users", requestOptions)
+      fetch("http://localhost:8080/api/v1/users", requestOptions)
         .then((response) => response.json())
         .then((data) => {
           this.userId= data.id;

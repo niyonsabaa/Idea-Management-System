@@ -1,5 +1,5 @@
 <template>
-  <CCardBody>
+  <CCardBody>    
     <CDataTable
       :items="items"
       :fields="fields"
@@ -52,23 +52,37 @@ export default {
     };
   },
   mounted() {
-    fetch("api/v1/attachments")
+    const myHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + this.$store.state.token,
+    });
+    fetch("http://localhost:8080/api/v1/attachments", {
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.items = data;
+        console.log(data);
       });
   },
 
   methods: {
     downloadAttachment(item) {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
       const requestOptions = {
         method: "GET",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
       };
-      fetch(`api/v1/attachments/download?fileName=${item.attachmentName}`, requestOptions).
-      then((response) =>{
+      fetch(
+        `http://localhost:8080/api/v1/attachments/download?fileName=${item.attachmentName}`,
+        requestOptions
+      ).then((response) => {
         alert(JSON.stringify(response.data));
-      });      
+      });
     },
   },
 };

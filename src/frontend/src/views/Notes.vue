@@ -31,7 +31,14 @@ export default {
     };
   },
   mounted() {
-    fetch("api/v1/notes")
+    const myHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + this.$store.state.token,
+    });
+    fetch("http://localhost:8080/api/v1/notes",{
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.items = data;

@@ -101,8 +101,7 @@ export default {
   mounted() {
     const myHeaders = new Headers({
       "Content-Type": "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhbGV4bnNhYmEiLCJleHAiOjE2MjMwODI1NjksImlhdCI6MTYyMzA2NDU2OX0.-e3VjnBgR8g-xiAVgxqeVPXv-OgnHQ3FE8KdUGbcrtwAR67AuTYQ3AvBIxYS4xCHH-aFrFUkZVXXQ30Hd6Qp3g",
+      Authorization: "Bearer " + this.$store.state.token,
     });
 
     fetch("http://localhost:8080/api/v1/gender", {
@@ -118,11 +117,15 @@ export default {
 
   methods: {
     deleteGender(item) {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
       const requestOptions = {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
       };
-      fetch(`api/v1/gender/${item.id}`, requestOptions);
+      fetch(`http://localhost:8080/api/v1/gender/${item.id}`, requestOptions);
     },
 
     loadGenderModel(item) {
@@ -131,13 +134,22 @@ export default {
       this.genderModal = true;
     },
     updateGender() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+
       const requestOptions = {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
         body: JSON.stringify({ genderName: this.gender_name }),
       };
+
       this.genderModal = false;
-      fetch(`api/v1/gender/${this.genderId}`, requestOptions)
+      fetch(
+        `http://localhost:8080/api/v1/gender/${this.genderId}`,
+        requestOptions
+      )
         .then((response) => response.json())
         .then((data) => {
           this.genderId = data.id;

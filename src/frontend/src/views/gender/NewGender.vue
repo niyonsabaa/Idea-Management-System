@@ -1,10 +1,10 @@
 <template>
   <div>
     <div v-if="updateAlert">
-          <CAlert color="primary" closeButton>
-           <h4> Gender Record # {{genderId}} is successfully created.</h4>
-          </CAlert>
-        </div>
+      <CAlert color="primary" closeButton>
+        <h4>Gender Record # {{ genderId }} is successfully created.</h4>
+      </CAlert>
+    </div>
     <CRow>
       <CCol lg="12">
         <transition name="fade">
@@ -23,7 +23,7 @@
               </div>
             </CCardHeader>
             <CCollapse :show="formCollapsed">
-              <CCardBody>                
+              <CCardBody>
                 <CForm @submit="saveGender">
                   <CInput
                     label="Gender"
@@ -54,23 +54,27 @@ export default {
       formCollapsed: true,
       gender_name: "",
       genderId: "",
-      updateAlert: false
+      updateAlert: false,
     };
   },
   methods: {
     saveGender: function () {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
         body: JSON.stringify({ genderName: this.gender_name }),
       };
-      fetch("api/v1/gender", requestOptions)
+      fetch("http://localhost:8080/api/v1/gender", requestOptions)
         .then((response) => response.json())
         .then((data) => {
           this.genderId = data.id;
           this.updateAlert = true;
-          });
-    }
+        });
+    },
   },
 };
 </script>

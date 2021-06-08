@@ -60,7 +60,7 @@
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
                   do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                 </p>
-                <CButton color="light" @click="testState" variant="outline" size="lg">
+                <CButton color="light" variant="outline" size="lg">
                   Register Now!
                 </CButton>
               </CCardBody>
@@ -100,15 +100,9 @@ export default {
       fetch(`http://localhost:8080/authenticate`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          this.$store.commit('setToken',data.token)
-          //alert(data.token);
+          this.$store.commit('setToken',data.token)          
         });
-    },
-
-    testState(){
-      //alert("we are testing the state")
-      this.$store.commit('setToken','token Changed')
-    }
+    },  
 
   },
 };

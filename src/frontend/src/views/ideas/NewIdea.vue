@@ -83,13 +83,23 @@
 export default {
   name: "NewIdea",
   mounted() {
-    fetch("api/v1/category")
+    const myHeaders = new Headers({
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + this.$store.state.token,
+    });
+    fetch("http://localhost:8080/api/v1/category", {
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.categoryData = data;
       });
 
-    fetch("api/v1/priority")
+    fetch("http://localhost:8080/api/v1/priority", {
+      method: "GET",
+      headers: myHeaders,
+    })
       .then((response) => response.json())
       .then((data) => {
         this.priorityData = data;
@@ -114,18 +124,26 @@ export default {
 
   methods: {
     createIdea() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+
       const requestOptions = {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: myHeaders,
         body: JSON.stringify({
           dateOfSubmission: this.submissionDate,
           ideaDescription: this.description,
           ideaTitle: this.title,
           ideaBackgroundDescription: this.backgroundDescription,
-          ideaExecutiveSummary: this.executiveSummary
+          ideaExecutiveSummary: this.executiveSummary,
         }),
       };
-      fetch(`api/v1/ideas/?userId=1&categoryId=${this.category}&priorityId=${this.priority}`, requestOptions)
+      fetch(
+        `http://localhost:8080/api/v1/ideas/?userId=1&categoryId=${this.category}&priorityId=${this.priority}`,
+        requestOptions
+      )
         .then((response) => response.json())
         .then((data) => {
           this.ideaId = data.id;

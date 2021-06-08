@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 const state = {
   sidebarShow: 'responsive',
   sidebarMinimize: false,
-  token:''
+  token:[]
 }
 
 const mutations = {
@@ -29,6 +30,9 @@ const mutations = {
 }
 
 export default new Vuex.Store({
+  plugins: [createPersistedState({
+    storage: window.sessionStorage,
+})],
   state,
   mutations
 })
