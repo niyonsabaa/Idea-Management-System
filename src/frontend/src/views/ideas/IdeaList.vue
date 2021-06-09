@@ -17,8 +17,8 @@
             <h4>
               Attachment Record # {{ attachmentId }} , successfully saved.
             </h4>
-          </CAlert>
-        </div>
+          </CAlert>        
+        </div>        
 
         <CCardBody>
           <CDataTable

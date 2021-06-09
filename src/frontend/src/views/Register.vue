@@ -1,25 +1,23 @@
 <template>
   <div class="d-flex align-items-center min-vh-100">
-    <CContainer fluid>
-      <CRow class="justify-content-center">
-        <CCol md="6">
-          <CCard class="mx-4 mb-0">
-            <CCardBody class="p-4">
-              <div v-if="registerAlert">
-                <CAlert color="primary" closeButton>
-                  <h4>User, # {{ userId }} is successfully registered.</h4>
-                </CAlert>
-              </div>
-              <CForm @submit="registerUser()">
-                <h1>Register</h1>
-                <p class="text-muted">Create your account</p>
-
+    <CContainer fluid> 
+    <div v-if="registerAlert">
+        <CAlert color="primary" closeButton>
+          <h4>User, # {{ userId }} is successfully registered.</h4>
+        </CAlert>
+      </div>
+      <CCard class="mx-4 mb-0">
+        <CCardBody class="p-4">
+          <CForm @submit="registerUser()">
+            <h1 class="text-center">Register</h1>
+            <p class="text-muted text-center">Create your account</p>
+            <CRow>
+              <CCol md="6">
                 <CInput
                   label="Email Address"
                   type="email"
                   v-model="email"
-                  required="required"
-                  prepend="@"
+                  required="required"                  
                 />
                 <label>Prefix</label>
                 <select
@@ -40,18 +38,17 @@
                   label="First Name"
                   type="text"
                   v-model="fName"
-                  required="required"
-                  prepend="@"
+                  required="required"                  
                 />
 
                 <CInput
                   label="Last Name"
                   type="text"
                   v-model="lName"
-                  required="required"
-                  prepend="@"
+                  required="required"                  
                 />
-
+              </CCol>
+              <CCol md="6">
                 <label>Postfix</label>
                 <select
                   class="form-control"
@@ -103,18 +100,18 @@
                   v-model="password"
                   type="password"
                 >
-                  <template #prepend-content
+                  <!-- <template #prepend-content
                     ><CIcon name="cil-lock-locked"
-                  /></template>
+                  /></template> -->
                 </CInput>
                 <CButton color="success" type="submit" block
                   >Create Account</CButton
                 >
-              </CForm>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
+              </CCol>
+            </CRow>
+          </CForm>
+        </CCardBody>
+      </CCard>
     </CContainer>
   </div>
 </template>
@@ -136,7 +133,7 @@ export default {
       country: "",
       password: "",
       registerAlert: false,
-      userId:""
+      userId: "",
     };
   },
   mounted() {
@@ -144,7 +141,7 @@ export default {
       "Content-Type": "application/json",
       Authorization: "Bearer " + this.$store.state.token,
     });
-    fetch("http://localhost:8080/api/v1/postfix",{
+    fetch("http://localhost:8080/api/v1/postfix", {
       method: "GET",
       headers: myHeaders,
     })
@@ -153,7 +150,7 @@ export default {
         this.postfixData = data;
       });
 
-    fetch("http://localhost:8080/api/v1/prefix",{
+    fetch("http://localhost:8080/api/v1/prefix", {
       method: "GET",
       headers: myHeaders,
     })
@@ -162,7 +159,7 @@ export default {
         this.prefixData = data;
       });
 
-    fetch("http://localhost:8080/api/v1/countries",{
+    fetch("http://localhost:8080/api/v1/countries", {
       method: "GET",
       headers: myHeaders,
     })
@@ -171,7 +168,7 @@ export default {
         this.countryData = data;
       });
 
-    fetch("http://localhost:8080/api/v1/gender",{
+    fetch("http://localhost:8080/api/v1/gender", {
       method: "GET",
       headers: myHeaders,
     })
@@ -183,9 +180,9 @@ export default {
   methods: {
     registerUser() {
       const myHeaders = new Headers({
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + this.$store.state.token,
-    });
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
       const requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -203,7 +200,7 @@ export default {
       fetch("http://localhost:8080/api/v1/users", requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          this.userId= data.id;
+          this.userId = data.id;
           this.registerAlert = true;
         });
     },

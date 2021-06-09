@@ -11,56 +11,37 @@
       @click="$store.commit('toggleSidebarDesktop')"
     />
     <CHeaderBrand class="mx-auto d-lg-none" to="/">
-      <CIcon name="logo" height="48" alt="Logo"/>
+      <div>
+          <img
+            src="img/logo.jpg"
+            height="55"
+            width="200"
+          />
+        </div>
     </CHeaderBrand>
     <CHeaderNav class="d-md-down-none mr-auto">
       <CHeaderNavItem class="px-3">
         <CHeaderNavLink to="/dashboard">
-          Dashboard
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/users" exact>
-          Users
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="px-3">
-        <CHeaderNavLink>
-          Settings
+          <h2>Idea Management System</h2>
         </CHeaderNavLink>
       </CHeaderNavItem>
     </CHeaderNav>
     <CHeaderNav class="mr-4">
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-bell"/>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-list"/>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <CHeaderNavItem class="d-md-down-none mx-2">
-        <CHeaderNavLink>
-          <CIcon name="cil-envelope-open"/>
-        </CHeaderNavLink>
-      </CHeaderNavItem>
-      <TheHeaderDropdownAccnt/>
+      <TheHeaderDropdownAccnt />
     </CHeaderNav>
     <CSubheader class="px-3">
-      <CBreadcrumbRouter class="border-0 mb-0"/>
+      <CBreadcrumbRouter class="border-0 mb-0" />
     </CSubheader>
   </CHeader>
 </template>
 
 <script>
-import TheHeaderDropdownAccnt from './TheHeaderDropdownAccnt'
+import TheHeaderDropdownAccnt from "./TheHeaderDropdownAccnt";
 
 export default {
-  name: 'TheHeader',
+  name: "TheHeader",
   components: {
-    TheHeaderDropdownAccnt
-  }
-}
+    TheHeaderDropdownAccnt,
+  },
+};
 </script>

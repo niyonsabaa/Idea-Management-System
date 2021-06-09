@@ -6,7 +6,7 @@
           <CCardGroup>
             <CCard class="p-4">
               <CCardBody>
-                <p>{{this.$store.state.token}}</p>                
+                <!-- <p>{{this.$store.state.token}}</p>                 -->
                 <CForm @submit="login">
                   <h1>Login</h1>
                   <p class="text-muted">Log In to your account</p>
@@ -40,7 +40,7 @@
                         >Forgot password?</CButton
                       >
 
-                      <CButton color="link" class="d-lg-none"                       
+                      <CButton href="/?#/register" color="link" class="d-lg-none"                       
                       >Register now!</CButton
                       >
                     </CCol>
@@ -57,10 +57,9 @@
               <CCardBody>
                 <h2>Sign up</h2>
                 <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Create Account with The Idea manegement System.
                 </p>
-                <CButton color="light" variant="outline" size="lg">
+                <CButton href="/?#/register" color="light" variant="outline" size="lg">
                   Register Now!
                 </CButton>
               </CCardBody>
