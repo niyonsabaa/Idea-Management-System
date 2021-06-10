@@ -47,6 +47,8 @@ export default {
   methods:{
     logout(){
       sessionStorage.clear();
+      document.location.reload(true)
+      this.$router.push("/") 
     }
   }
 }

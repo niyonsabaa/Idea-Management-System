@@ -1,6 +1,9 @@
 const ignoredModules = ['@coreui/icons', '@coreui/utils'].join('|')
 
 module.exports = {
+  presets: [
+    "@babel/preset-env"
+ ],
   moduleFileExtensions: [
     'js',
     'jsx',
@@ -10,7 +13,8 @@ module.exports = {
   transform: {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.(js|jsx)?$': '<rootDir>/node_modules/babel-jest'
+    '^.+\\.(js|jsx)?$': '<rootDir>/node_modules/babel-jest',
+    "^.+\\.js$": "babel-jest"
   },
   transformIgnorePatterns: [`<rootDir>/node_modules/(?!${ignoredModules})`],
   moduleNameMapper: {

@@ -1,216 +1,235 @@
 <template>
   <div>
-    <div>
-      <template>
-        <div v-if="updateAlert">
-          <CAlert color="primary" closeButton>
-            <h4>Idea Record # {{ ideaId }} , successfully updated.</h4>
-          </CAlert>
-        </div>
-        <div v-if="addNotesAlert">
-          <CAlert color="primary" closeButton>
-            <h4>Note Record # {{ noteId }} , successfully saved.</h4>
-          </CAlert>
-        </div>
-        <div v-if="addAttachmentAlert">
-          <CAlert color="primary" closeButton>
-            <h4>
-              Attachment Record # {{ attachmentId }} , successfully saved.
-            </h4>
-          </CAlert>        
-        </div>        
+    <span v-if="this.$store.state.token">
+      <div>
+        <template>
+          <div v-if="updateAlert">
+            <CAlert color="primary" closeButton>
+              <h4>Idea Record # {{ ideaId }} , successfully updated.</h4>
+            </CAlert>
+          </div>
+          <div v-if="addNotesAlert">
+            <CAlert color="primary" closeButton>
+              <h4>Note Record # {{ noteId }} , successfully saved.</h4>
+            </CAlert>
+          </div>
+          <div v-if="addAttachmentAlert">
+            <CAlert color="primary" closeButton>
+              <h4>
+                Attachment Record # {{ attachmentId }} , successfully saved.
+              </h4>
+            </CAlert>
+          </div>
 
-        <CCardBody>
-          <CDataTable
-            :items="items"
-            :fields="fields"
-            column-filter
-            table-filter
-            items-per-page-select
-            :items-per-page="5"
-            hover
-            sorter
-            pagination
-          >
-            <template #actions="{ item, index }">
-              <td class="d-flex py-2">
-                <CButton
-                  color="danger"
-                  variant="outline"
-                  square
-                  size="sm"
-                  @click="deleteIdea(item, index)"
-                >
-                  Delete
-                </CButton>
+          <CCardBody>
+            <CDataTable
+              :items="items"
+              :fields="fields"
+              column-filter
+              table-filter
+              items-per-page-select
+              :items-per-page="5"
+              hover
+              sorter
+              pagination
+            >
+              <template #category="{ item }">
+                <td>
+                  {{ item.category.categoryName }}
+                </td>
+              </template>
+              <template #priority="{ item }">
+                <td>
+                  {{ item.priority.priorityName }}
+                </td>
+              </template>
+              <template #user="{ item }">
+                <td>{{ item.user.firstName }} {{ item.user.lastName }}</td>
+              </template>
 
-                <CButton
-                  color="primary"
-                  variant="outline"
-                  square
-                  size="sm"
-                  @click="loadIdeaModel(item, index)"
-                >
-                  Edit
-                </CButton>
+              <template #actions="{ item, index }">
+                <td class="d-flex py-2">
+                  <CButton
+                    color="danger"
+                    variant="outline"
+                    square
+                    size="sm"
+                    @click="deleteIdea(item, index)"
+                  >
+                    Delete
+                  </CButton>
+                  <span style="margin-left: 10px"></span>
+                  <CButton
+                    color="primary"
+                    variant="outline"
+                    square
+                    size="sm"
+                    @click="loadIdeaModel(item, index)"
+                  >
+                    Edit
+                  </CButton>
+                  <span style="margin-left: 10px"></span>
+                  <CButton
+                    color="primary"
+                    variant="outline"
+                    square
+                    size="sm"
+                    @click="loadAddNotesModal(item, index)"
+                  >
+                    Add Notes
+                  </CButton>
+                  <span style="margin-left:10px"></span>
+                  <CButton
+                    color="primary"
+                    variant="outline"
+                    square
+                    size="sm"
+                    @click="loadAttachmentModal(item, index)"
+                  >
+                    Attach File
+                  </CButton>
 
-                <CButton
-                  color="primary"
-                  variant="outline"
-                  square
-                  size="sm"
-                  @click="loadAddNotesModal(item, index)"
-                >
-                  Add Notes
-                </CButton>
+                  <CModal
+                    title="Update Idea"
+                    :show.sync="ideaModal"
+                    color="primary"
+                  >
+                    <CForm @submit="updateIdea()">
+                      <CInput
+                        label="Title"
+                        type="text"
+                        v-model="title"
+                        :placeholder="title"
+                        required="required"
+                      />
 
-                <CButton
-                  color="primary"
-                  variant="outline"
-                  square
-                  size="sm"
-                  @click="loadAttachmentModal(item, index)"
-                >
-                  Attach File
-                </CButton>
-
-                <CModal
-                  title="Update Idea"
-                  :show.sync="ideaModal"
-                  color="primary"
-                >
-                  <CForm @submit="updateIdea()">
-                    <CInput
-                      label="Title"
-                      type="text"
-                      v-model="title"
-                      :placeholder="title"
-                      required="required"
-                    />
-
-                    <label>Category</label>
-                    <select
-                      class="form-control"
-                      v-model="category"
-                      required="required"
-                    >
-                      <option
-                        :value="cat.id"
-                        v-for="cat in categoryData"
-                        :key="cat.categoryName"
+                      <label>Category</label>
+                      <select
+                        class="form-control"
+                        v-model="category"
+                        required="required"
                       >
-                        {{ cat.categoryName }}
-                      </option>
-                    </select>
+                        <option
+                          :value="cat.id"
+                          v-for="cat in categoryData"
+                          :key="cat.categoryName"
+                        >
+                          {{ cat.categoryName }}
+                        </option>
+                      </select>
 
-                    <CTextarea
-                      label="Description"
-                      v-model="description"
-                      :placeholder="description"
-                      required="required"
-                    />
-                    <label>Priority</label>
-                    <select
-                      class="form-control"
-                      v-model="priority"
-                      required="required"
-                    >
-                      <option
-                        :value="prio.id"
-                        v-for="prio in priorityData"
-                        :key="prio.priorityName"
+                      <CTextarea
+                        label="Description"
+                        v-model="description"
+                        :placeholder="description"
+                        required="required"
+                      />
+                      <label>Priority</label>
+                      <select
+                        class="form-control"
+                        v-model="priority"
+                        required="required"
                       >
-                        {{ prio.priorityName }}
-                      </option>
-                    </select>
+                        <option
+                          :value="prio.id"
+                          v-for="prio in priorityData"
+                          :key="prio.priorityName"
+                        >
+                          {{ prio.priorityName }}
+                        </option>
+                      </select>
 
-                    <CTextarea
-                      label="Executive Summarry"
-                      v-model="executiveSummary"
-                      placeholder="executiveSummary"
-                      required="required"
-                    />
-                    <CTextarea
-                      label="Background Description"
-                      v-model="backgroundDescription"
-                      :placeholder="backgroundDescription"
-                      required="required"
-                    />
+                      <CTextarea
+                        label="Executive Summarry"
+                        v-model="executiveSummary"
+                        placeholder="executiveSummary"
+                        required="required"
+                      />
+                      <CTextarea
+                        label="Background Description"
+                        v-model="backgroundDescription"
+                        :placeholder="backgroundDescription"
+                        required="required"
+                      />
 
-                    <div class="form-actions">
-                      <CButton type="submit" color="primary">Update</CButton>
-                    </div>
-                  </CForm>
-                  <template #footer>
-                    <br />
-                  </template>
-                </CModal>
-
-                <CModal
-                  title="Add Notes"
-                  :show.sync="addNotesModal"
-                  color="primary"
-                >
-                  <CForm @submit="saveNote()">
-                    <CTextarea
-                      label="Notes Content"
-                      v-model="content"
-                      required="required"
-                    />
-
-                    <div class="form-actions">
-                      <CButton type="submit" color="primary">Save</CButton>
-                    </div>
-                  </CForm>
-                  <template #footer>
-                    <br />
-                  </template>
-                </CModal>
-
-                <CModal
-                  title="Add Attachment"
-                  :show.sync="attachmentModal"
-                  color="primary"
-                >
-                  <form ref="uploadForm" @submit="saveAttachment">
-                    <label>Attach File</label><br />
-                    <input
-                      type="file"
-                      ref="uploadFile"
-                      @change="handleFileUpload()"
-                      required="required"
-                    />
-
-                    <div class="form-actions">
+                      <div class="form-actions">
+                        <CButton type="submit" color="primary">Update</CButton>
+                      </div>
+                    </CForm>
+                    <template #footer>
                       <br />
-                      <CButton
-                        type="button"
-                        @click="saveAttachment()"
-                        name="upload"
-                        value="upload"
-                        color="primary"
-                        >Upload</CButton
-                      >
-                    </div>
-                  </form>
-                  <template #footer>
-                    <br />
-                  </template>
-                </CModal>
-              </td>
-            </template>
-          </CDataTable>
-        </CCardBody>
-      </template>
-    </div>
+                    </template>
+                  </CModal>
+
+                  <CModal
+                    title="Add Notes"
+                    :show.sync="addNotesModal"
+                    color="primary"
+                  >
+                    <CForm @submit="saveNote()">
+                      <CTextarea
+                        label="Notes Content"
+                        v-model="content"
+                        required="required"
+                      />
+
+                      <div class="form-actions">
+                        <CButton type="submit" color="primary">Save</CButton>
+                      </div>
+                    </CForm>
+                    <template #footer>
+                      <br />
+                    </template>
+                  </CModal>
+
+                  <CModal
+                    title="Add Attachment"
+                    :show.sync="attachmentModal"
+                    color="primary"
+                  >
+                    <form ref="uploadForm" @submit="saveAttachment">
+                      <label>Attach File</label><br />
+                      <input
+                        type="file"
+                        ref="uploadFile"
+                        @change="handleFileUpload()"
+                        required="required"
+                      />
+
+                      <div class="form-actions">
+                        <br />
+                        <CButton
+                          type="button"
+                          @click="saveAttachment()"
+                          name="upload"
+                          value="upload"
+                          color="primary"
+                          >Upload</CButton
+                        >
+                      </div>
+                    </form>
+                    <template #footer>
+                      <br />
+                    </template>
+                  </CModal>
+                </td>
+              </template>
+            </CDataTable>
+          </CCardBody>
+        </template>
+      </div>
+    </span>
+    <span v-else>
+      {{ this.$router.push("/") }}
+    </span>
   </div>
 </template>
 <script>
 import axios from "axios";
 const fields = [
   { label: "#", key: "id" },
-  { label: "Title", key: "ideaTitle" },
   { label: "Category", key: "category" },
+  { label: "Title", key: "ideaTitle" },
   { label: "Submitted on", key: "dateOfSubmission" },
   { label: "Description", key: "ideaDescription" },
   { label: "Background", key: "ideaBackgroundDescription" },
@@ -373,7 +392,7 @@ export default {
 
     saveAttachment() {
       const myHeaders = new Headers({
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
         Authorization: "Bearer " + this.$store.state.token,
       });
       axios({

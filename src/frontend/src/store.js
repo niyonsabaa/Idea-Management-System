@@ -6,7 +6,7 @@ Vue.use(Vuex)
 const state = {
   sidebarShow: 'responsive',
   sidebarMinimize: false,
-  token:[]
+  token:''
 }
 
 const mutations = {

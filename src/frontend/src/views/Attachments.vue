@@ -1,38 +1,53 @@
 <template>
-  <CCardBody>    
-    <CDataTable
-      :items="items"
-      :fields="fields"
-      column-filter
-      table-filter
-      items-per-page-select
-      :items-per-page="5"
-      hover
-      sorter
-      pagination
-    >
-      <template #actions="{ item, index }">
-        <td class="d-flex py-2">
-          <CButton
-            color="danger"
-            variant="outline"
-            square
-            size="sm"
-            @click="downloadAttachment(item, index)"
-          >
-            Download
-          </CButton>
-        </td>
-      </template>
-    </CDataTable>
-  </CCardBody>
+  <span v-if="this.$store.state.token">    
+    <CCardBody>
+      <CDataTable
+        :items="items"
+        :fields="fields"
+        column-filter
+        table-filter
+        items-per-page-select
+        :items-per-page="5"
+        hover
+        sorter
+        pagination
+      >
+      <template #idea="{item}">
+      <td>
+          {{item.idea.ideaTitle}}
+      </td>      
+    </template>
+    <template #user="{item}">
+      <td>
+          {{item.idea.user.firstName}} {{item.idea.user.lastName}}
+      </td>      
+    </template>
+        <template #actions="{ item, index }">
+          <td class="d-flex py-2">
+            <CButton
+              color="danger"
+              variant="outline"
+              square
+              size="sm"
+              @click="downloadAttachment(item, index)"
+            >
+              Download
+            </CButton>
+          </td>
+        </template>
+      </CDataTable>
+    </CCardBody>
+  </span>
+  <span v-else>
+    {{ this.$router.push("/") }}
+  </span>
 </template>
 <script>
 const fields = [
   { label: "#", key: "id" },
   { label: "Attachment Name", key: "attachmentName" },
   { label: "idea Title", key: "idea" },
-  { label: "Idea Owner", key: "idea" },
+  { label: "Idea Owner", key: "user" },
   {
     key: "actions",
     label: "Actions",

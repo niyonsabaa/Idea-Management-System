@@ -82,9 +82,6 @@ export default {
       password: "",
     };
   },
-
-
-
   methods: {
     login() {
       const requestOptions = {
@@ -99,7 +96,8 @@ export default {
       fetch(`http://localhost:8080/authenticate`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          this.$store.commit('setToken',data.token)          
+          this.$store.commit('setToken',data.token)
+          this.$router.push("dashboard")          
         });
     },  
 

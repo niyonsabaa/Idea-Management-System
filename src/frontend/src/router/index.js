@@ -16,7 +16,7 @@ import Login from "../views/Login.vue"
 import Register from "../views/Register.vue"
 import Notes from "../views/Notes.vue"
 import Attachments from "../views/Attachments.vue"
-
+import Users from "../views/Users.vue"
 Vue.use(Router)
 
 export default new Router({
@@ -29,7 +29,7 @@ export default new Router({
 function configRoutes() {
   return [
     {
-      path: '/login',
+      path: '/',
       name: 'Login',
       component: Login
     },
@@ -60,7 +60,12 @@ function configRoutes() {
           path: '/attachments',
           name: 'Attachments',
           component: Attachments,
-        },        
+        },  
+        {
+          path: '/users',
+          name: 'Users',
+          component: Users,
+        },       
         {
           path: 'ideas',
           redirect: '/ideas/cards',

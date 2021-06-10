@@ -7,18 +7,14 @@ export default [
         _name: 'CSidebarNavItem',
         name: 'Dashboard',
         to: '/dashboard',
-        icon: 'cil-speedometer',
-        badge: {
-          color: 'primary',
-          text: 'NEW'
-        }
+        icon: 'cil-speedometer'       
       },
       
       {
         _name: 'CSidebarNavDropdown',
         name: 'Ideas',
         route: '/ideas',
-        icon: 'cil-puzzle',
+        icon: 'cil-list',
         items: [
           {
             name: 'New Idea',
@@ -34,7 +30,7 @@ export default [
         _name: 'CSidebarNavDropdown',
         name: 'Gender',
         route: '/gender',
-        icon: 'cil-puzzle',
+        icon: 'cil-people',
         items: [
           {
             name: 'New Gender',
@@ -51,13 +47,19 @@ export default [
         _name: 'CSidebarNavItem',
         name: 'View Notes',
         to: '/notes',
-        icon: 'cil-puzzle',       
+        icon: 'cil-comment-square',       
       },
       {
         _name: 'CSidebarNavItem',
         name: 'View Attachments',
         to: '/attachments',
-        icon: 'cil-puzzle',       
+        icon: 'cil-file',       
+      },
+      {
+        _name: 'CSidebarNavItem',
+        name: 'Users',
+        to: '/users',
+        icon: 'cil-user',       
       }   
 
     ]

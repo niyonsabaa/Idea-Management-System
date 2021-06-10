@@ -1,83 +1,87 @@
 <template>
-  <div class="d-flex align-items-center min-vh-100">
-    <CContainer fluid>
-      <CRow class="justify-content-center">
-        <CCol md="6">
-          <CCard class="mx-4 mb-0">
-            <CCardBody class="p-4">
-              <div v-if="createIdeaAlert">
-                <CAlert color="primary" closeButton>
-                  <h4>Idea, # {{ ideaId }} is successfully created.</h4>
-                </CAlert>
-              </div>
-              <CForm @submit="createIdea()">
-                <h3>Create New Idea</h3>
-
-                <CInput
-                  label="Title"
-                  type="text"
-                  v-model="title"
-                  required="required"
-                />
-                <label>Category</label>
-                <select
-                  class="form-control"
-                  v-model="category"
-                  required="required"
-                >
-                  <option
-                    :value="cat.id"
-                    v-for="cat in categoryData"
-                    :key="cat.categoryName"
+  <div>
+    <span v-if="this.$store.state.token">
+      <CContainer fluid>
+        <div v-if="createIdeaAlert">
+          <CAlert color="primary" closeButton>
+            <h4>Idea, # {{ ideaId }} is successfully created.</h4>
+          </CAlert>
+        </div>
+        <CCard class="mx-4 mb-0">
+          <CCardBody class="p-4">
+            <CForm @submit="createIdea()">
+              <h3>Create New Idea</h3>
+              <CRow>
+                <CCol md="6">
+                  <CInput
+                    label="Title"
+                    type="text"
+                    v-model="title"
+                    required="required"
+                  />
+                  <label>Category</label>
+                  <select
+                    class="form-control"
+                    v-model="category"
+                    required="required"
                   >
-                    {{ cat.categoryName }}
-                  </option>
-                </select>
-
-                <CTextarea
-                  label="Description"
-                  v-model="description"
-                  required="required"
-                />
-                <label>Priority</label>
-                <select
-                  class="form-control"
-                  v-model="priority"
-                  required="required"
-                >
-                  <option
-                    :value="prio.id"
-                    v-for="prio in priorityData"
-                    :key="prio.priorityName"
+                    <option
+                      :value="cat.id"
+                      v-for="cat in categoryData"
+                      :key="cat.categoryName"
+                    >
+                      {{ cat.categoryName }}
+                    </option>
+                  </select>
+                  <CTextarea
+                    label="Description"
+                    v-model="description"
+                    required="required"
+                  />
+                  <label>Priority</label>
+                  <select
+                    class="form-control"
+                    v-model="priority"
+                    required="required"
                   >
-                    {{ prio.priorityName }}
-                  </option>
-                </select>
-                <CTextarea
-                  label="Executive Summarry"
-                  v-model="executiveSummary"
-                  required="required"
-                />
-                <CTextarea
-                  label="Background Description"
-                  v-model="backgroundDescription"
-                  required="required"
-                />
-                <CInput
-                  label="Date Of Submission"
-                  type="date"
-                  v-model="submissionDate"
-                  required="required"
-                />
-                <br />
-                <CButton color="success" type="submit" block>Save</CButton>
-              </CForm>
-            </CCardBody>
-          </CCard>
-        </CCol>
-        
-      </CRow>
-    </CContainer>
+                    <option
+                      :value="prio.id"
+                      v-for="prio in priorityData"
+                      :key="prio.priorityName"
+                    >
+                      {{ prio.priorityName }}
+                    </option>
+                  </select>
+                </CCol>
+                <CCol md="6">
+                  <CTextarea
+                    label="Executive Summarry"
+                    v-model="executiveSummary"
+                    required="required"
+                  />
+                  <CTextarea
+                    label="Background Description"
+                    v-model="backgroundDescription"
+                    required="required"
+                  />
+                  <CInput
+                    label="Date Of Submission"
+                    type="date"
+                    v-model="submissionDate"
+                    required="required"
+                  />
+                  <br />
+                  <CButton color="success" type="submit" block>Save</CButton>
+                </CCol>
+              </CRow>
+            </CForm>
+          </CCardBody>
+        </CCard>        
+      </CContainer>
+    </span>
+    <span v-else>
+      {{ this.$router.push("/") }}
+    </span>
   </div>
 </template>
 <script>

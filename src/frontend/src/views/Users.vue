@@ -5,7 +5,7 @@
         <template>
           <div v-if="updateAlert">
             <CAlert color="primary" closeButton>
-              <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
+              <h4>User # {{ genderId }} , successfully updated.</h4>
             </CAlert>
           </div>
           <CCardBody>
@@ -78,10 +78,16 @@
 </template>
 <script>
 const fields = [
-  { key: "id", _style: "min-width:200px" },
-
-  { key: "genderName", _style: "min-width:100px;" },
-
+  { label: "#", key: "id" },
+  { label: "Email Address", key: "email" },
+  { label: "First Name", key: "firstName" },
+  { label: "Last Name", key: "lastName" },
+  { label: "Username", key: "username" },
+  { label: "Gender", key: "gender" },
+  { label: "Country", key: "countryId" },
+  { label: "Postfix", key: "postfix" },
+  { label: "Prefix", key: "prefix" },
+  { label: "Roles", key: "roles" },
   {
     key: "actions",
     label: "Actions",
@@ -90,26 +96,21 @@ const fields = [
     filter: false,
   },
 ];
-
 export default {
-  name: "GenderList",
+  name: "Users",
   data() {
     return {
       items: [],
       fields,
-      genderModal: false,
-      genderId: "",
-      gender_name: "",
-      updateAlert: false,
     };
   },
   mounted() {
-    const myHeaders = new Headers({
+       const myHeaders = new Headers({
       "Content-Type": "application/json",
       Authorization: "Bearer " + this.$store.state.token,
     });
 
-    fetch("http://localhost:8080/api/v1/gender", {
+    fetch("http://localhost:8080/api/v1/users", {
       method: "GET",
       headers: myHeaders,
     })
@@ -119,48 +120,6 @@ export default {
         this.items = data;
       });
   },
-
-  methods: {
-    deleteGender(item) {
-      const myHeaders = new Headers({
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + this.$store.state.token,
-      });
-      const requestOptions = {
-        method: "DELETE",
-        headers: myHeaders,
-      };
-      fetch(`http://localhost:8080/api/v1/gender/${item.id}`, requestOptions);
-    },
-
-    loadGenderModel(item) {
-      this.genderId = item.id;
-      this.gender_name = item.genderName;
-      this.genderModal = true;
-    },
-    updateGender() {
-      const myHeaders = new Headers({
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + this.$store.state.token,
-      });
-
-      const requestOptions = {
-        method: "PATCH",
-        headers: myHeaders,
-        body: JSON.stringify({ genderName: this.gender_name }),
-      };
-
-      this.genderModal = false;
-      fetch(
-        `http://localhost:8080/api/v1/gender/${this.genderId}`,
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          this.genderId = data.id;
-          this.updateAlert = true;
-        });
-    },
-  },
+  methods: {},
 };
 </script>
