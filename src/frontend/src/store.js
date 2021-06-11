@@ -6,7 +6,8 @@ Vue.use(Vuex)
 const state = {
   sidebarShow: 'responsive',
   sidebarMinimize: false,
-  token:''
+  token:'',
+  successRegistration:false
 }
 
 const mutations = {
@@ -26,6 +27,10 @@ const mutations = {
 
   setToken(state, currentToken){
     state.token = currentToken
+  },
+
+  setSuccessRegistration(state){
+    state.successRegistration = true
   }
 }
 

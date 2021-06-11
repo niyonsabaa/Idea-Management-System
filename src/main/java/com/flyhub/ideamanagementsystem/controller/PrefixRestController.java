@@ -1,8 +1,7 @@
 package com.flyhub.ideamanagementsystem.controller;
 
 import java.util.List;
-import java.util.Optional;
-
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -32,7 +31,7 @@ public class PrefixRestController {
 	
 	@GetMapping("/{id}")
 	
-	public Optional<Prefix> findPrefix(@PathVariable("id") Long id) {
+	public Prefix findPrefix(@PathVariable("id") Long id) {
 		return prefixService.findPrefix(id);
 	}
 	
@@ -48,8 +47,8 @@ public class PrefixRestController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Prefix> updatePrefix(@RequestBody Prefix prefix, @PathVariable("id") Long id){
-		Optional<Prefix> oldPrefix = prefixService.findPrefix(id);
-		if(!oldPrefix.isPresent()) {
+		Prefix oldPrefix = prefixService.findPrefix(id);
+		if(Objects.isNull(oldPrefix)) {
 			return ResponseEntity.notFound().build();
 		}
 		prefix.setId(id);
@@ -58,8 +57,8 @@ public class PrefixRestController {
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<Prefix> updateSomePrefixFields(@RequestBody Prefix prefix, @PathVariable("id") Long id){
-		Optional<Prefix> oldPrefix = prefixService.findPrefix(id);
-		if(!oldPrefix.isPresent()) {
+		Prefix oldPrefix = prefixService.findPrefix(id);
+		if(Objects.isNull(oldPrefix)) {
 			return ResponseEntity.notFound().build();
 		}
 		prefix.setId(id);

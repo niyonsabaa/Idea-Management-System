@@ -1,11 +1,6 @@
 <template>
   <div class="d-flex align-items-center min-vh-100">
-    <CContainer fluid> 
-    <div v-if="registerAlert">
-        <CAlert color="primary" closeButton>
-          <h4>User, # {{ userId }} is successfully registered.</h4>
-        </CAlert>
-      </div>
+    <CContainer fluid>      
       <CCard class="mx-4 mb-0">
         <CCardBody class="p-4">
           <CForm @submit="registerUser()">
@@ -17,7 +12,7 @@
                   label="Email Address"
                   type="email"
                   v-model="email"
-                  required="required"                  
+                  required="required"
                 />
                 <label>Prefix</label>
                 <select
@@ -38,14 +33,14 @@
                   label="First Name"
                   type="text"
                   v-model="fName"
-                  required="required"                  
+                  required="required"
                 />
 
                 <CInput
                   label="Last Name"
                   type="text"
                   v-model="lName"
-                  required="required"                  
+                  required="required"
                 />
               </CCol>
               <CCol md="6">
@@ -104,8 +99,18 @@
                     ><CIcon name="cil-lock-locked"
                   /></template> -->
                 </CInput>
+                <CInput
+                  label="Username"
+                  required="required"
+                  v-model="username"
+                  type="text"
+                />
                 <CButton color="success" type="submit" block
                   >Create Account</CButton
+                >
+                <br />
+                <CButton href="/" color="link"
+                  >Already have an account? Click here to login</CButton
                 >
               </CCol>
             </CRow>
@@ -132,14 +137,12 @@ export default {
       lName: "",
       country: "",
       password: "",
-      registerAlert: false,
-      userId: "",
-    };
+      username: "",    
+      };
   },
   mounted() {
     const myHeaders = new Headers({
       "Content-Type": "application/json",
-      Authorization: "Bearer " + this.$store.state.token,
     });
     fetch("http://localhost:8080/api/v1/postfix", {
       method: "GET",
@@ -191,17 +194,17 @@ export default {
           password: this.password,
           firstName: this.fName,
           lastName: this.lName,
-          gender: this.gender,
-          countryId: this.country,
-          postfix: this.postfix,
-          prefix: this.prefix,
+          username: this.username,
         }),
       };
-      fetch("http://localhost:8080/api/v1/users", requestOptions)
+      fetch(
+        `http://localhost:8080/api/v1/users?genderId=${this.gender}&countryId=${this.country}&postfixId=${this.postfix}&prefixId=${this.prefix}`,
+        requestOptions
+      )
         .then((response) => response.json())
-        .then((data) => {
-          this.userId = data.id;
-          this.registerAlert = true;
+        .then(() => {
+           this.$store.commit("setSuccessRegistration")
+           this.$router.push("/")
         });
     },
   },

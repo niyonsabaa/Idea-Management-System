@@ -12,7 +12,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.JoinColumn;
 
 @Entity
@@ -32,17 +37,39 @@ public class User {
 
 	@Column(name = "username", unique = true)
 	private String username;
+	
+	@ManyToOne(targetEntity = Gender.class, fetch = FetchType.LAZY)
 
-	@Column(nullable = true)
-	private int gender;
+	@JoinColumn(name = "gender_id", nullable = false)
 
-	@Column(nullable = true)
-	private int countryId;
+	@OnDelete(action = OnDeleteAction.CASCADE)
 
-	@Column(nullable = true)
-	private int postfix;
-	@Column(nullable = true)
-	private int prefix;
+	private Gender gender;
+
+	@ManyToOne(targetEntity = Country.class, fetch = FetchType.LAZY)
+
+	@JoinColumn(name = "country_id", nullable = false)
+
+	@OnDelete(action = OnDeleteAction.CASCADE)
+
+	private Country country;
+
+	@ManyToOne(targetEntity = Postfix.class, fetch = FetchType.LAZY)
+
+	@JoinColumn(name = "postfix_id", nullable = false)
+
+	@OnDelete(action = OnDeleteAction.CASCADE)
+
+	private Postfix postfix;
+	
+	
+	@ManyToOne(targetEntity = Prefix.class, fetch = FetchType.LAZY)
+
+	@JoinColumn(name = "prefix_id", nullable = false)
+
+	@OnDelete(action = OnDeleteAction.CASCADE)
+
+	private Prefix prefix;	
 
 	// many to many relationships between the User and Role
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -91,36 +118,36 @@ public class User {
 		this.id = id;
 	}
 
-	public int getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(int gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 
-	public int getPostfix() {
+	public Postfix getPostfix() {
 		return postfix;
 	}
 
-	public void setPostfix(int postfix) {
+	public void setPostfix(Postfix postfix) {
 		this.postfix = postfix;
 	}
 
-	public int getPrefix() {
+	public Prefix getPrefix() {
 		return prefix;
 	}
 
-	public void setPrefix(int prefix) {
+	public void setPrefix(Prefix prefix) {
 		this.prefix = prefix;
 	}
 
-	public int getCountryId() {
-		return countryId;
+	public Country getCountry() {
+		return country;
 	}
 
-	public void setCountryId(int countryId) {
-		this.countryId = countryId;
+	public void setCountry(Country country) {
+		this.country= country;
 	}
 
 	public Set<Role> getRoles() {
@@ -140,16 +167,11 @@ public class User {
 	public User() {
 	}
 
-	public User(String email, String password, String firstName, String lastName, int gender, int countryId,
-			int postfix, int prefix,String username) {
+	public User(String email, String password, String firstName, String lastName,String username) {
         this.email= email;
 		this.password = password;
 		this.firstName = firstName;
-		this.lastName = lastName;
-		this.gender = gender;
-		this.countryId = countryId;
-		this.postfix = postfix;
-		this.prefix = prefix;
+		this.lastName = lastName;		
 		this.username = username;
 	}	
 

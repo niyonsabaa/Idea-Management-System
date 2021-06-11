@@ -20,6 +20,34 @@
               sorter
               pagination
             >
+              <template #gender="{ item }">
+                <td>
+                  {{ item.gender.genderName }}
+                </td>
+              </template>
+              <template #country="{ item }">
+                <td>
+                  {{ item.country.countryName }}
+                </td>
+              </template>
+              <template #postfix="{ item }">
+                <td>
+                  {{ item.postfix.postfixName }}
+                </td>
+              </template>
+              <template #prefix="{ item }">
+                <td>
+                  {{ item.prefix.prefixName }}
+                </td>
+              </template>
+              <template #roles="{ item }">
+                <td>
+                  {{ item.roles[0].name }}
+                  <span v-if="item.roles[1]">
+                   {{ item.roles[1].name }} 
+                  </span>
+                </td>
+              </template>
               <template #actions="{ item, index }">
                 <td class="d-flex py-2">
                   <CButton
@@ -84,7 +112,7 @@ const fields = [
   { label: "Last Name", key: "lastName" },
   { label: "Username", key: "username" },
   { label: "Gender", key: "gender" },
-  { label: "Country", key: "countryId" },
+  { label: "Country", key: "country" },
   { label: "Postfix", key: "postfix" },
   { label: "Prefix", key: "prefix" },
   { label: "Roles", key: "roles" },
@@ -105,7 +133,7 @@ export default {
     };
   },
   mounted() {
-       const myHeaders = new Headers({
+    const myHeaders = new Headers({
       "Content-Type": "application/json",
       Authorization: "Bearer " + this.$store.state.token,
     });

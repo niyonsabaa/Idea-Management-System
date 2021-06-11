@@ -1,13 +1,9 @@
 package com.flyhub.ideamanagementsystem.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import com.flyhub.ideamanagementsystem.DaO.GenderRepository;
 import com.flyhub.ideamanagementsystem.Entity.Gender;
 
@@ -20,8 +16,8 @@ public class GenderService {
 		return genderRepo.findAll();
 	}
 	
-	public Optional<Gender> findGender(Long id){
-		return genderRepo.findById(id);
+	public Gender findGender(Long id){
+		return genderRepo.findById(id).get();
 	}
 	
 	public Gender createGender(@RequestBody Gender gender) {

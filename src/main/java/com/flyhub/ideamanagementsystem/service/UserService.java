@@ -3,14 +3,16 @@ package com.flyhub.ideamanagementsystem.service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.flyhub.ideamanagementsystem.DaO.RoleRepository;
 import com.flyhub.ideamanagementsystem.DaO.UserRepository;
+import com.flyhub.ideamanagementsystem.Entity.Country;
+import com.flyhub.ideamanagementsystem.Entity.Gender;
+import com.flyhub.ideamanagementsystem.Entity.Postfix;
+import com.flyhub.ideamanagementsystem.Entity.Prefix;
 import com.flyhub.ideamanagementsystem.Entity.Role;
 import com.flyhub.ideamanagementsystem.Entity.User;
 
@@ -20,6 +22,14 @@ public class UserService {
 	private UserRepository repo;
 	@Autowired
 	private RoleRepository roleRepo;
+	@Autowired
+	private GenderService genderService;
+	@Autowired
+	private CountryService countryService;
+	@Autowired 
+	private PostfixService postfixService;
+	@Autowired 
+	private PrefixService prefixService;
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 	
 	public List<User> findAllUsers(){
@@ -30,14 +40,22 @@ public class UserService {
 		return repo.findById(id).get();
 	}
 	
-	public User createUser(User user) {
+	public User createUser(User user,Long genderId, Long countryId, Long postfixId, Long prefixId) {
 		String encodedPassword = encoder.encode(user.getPassword());
 		Role normalUser = roleRepo.findByName("User");
 		User registeredUser = checkEmail(user.getEmail());
+		Gender gender = genderService.findGender(genderId);
+		Country country = countryService.findCountry(countryId);
+		Postfix postfix = postfixService.findPostfix(postfixId);
+		Prefix prefix = prefixService.findPrefix(prefixId);
 		if(Objects.nonNull(registeredUser)) {
 			return null;
 		}
 		user.setPassword(encodedPassword);
+		user.setGender(gender);
+		user.setCountry(country);
+		user.setPostfix(postfix);
+		user.setPrefix(prefix);
 		User savedUser= repo.save(user);
 		savedUser.getRoles().addAll(Arrays.asList(normalUser));
 		return repo.save(savedUser);		
@@ -64,9 +82,17 @@ public class UserService {
 
 //creating user Account
 	public User registerUser(String email, String password, String firstName, String lastName,
-			int gender, int countryId, int postfix, int prefix,String username) {
+		Long genderId, Long countryId, Long postfixId, Long prefixId,String username) {
 		String encodedPassword = encoder.encode(password);
-		User user = new User(email,encodedPassword,firstName,lastName,gender,countryId,postfix,prefix,username);
+		Gender gender = genderService.findGender(genderId);
+		Country country = countryService.findCountry(countryId);
+		Postfix postfix = postfixService.findPostfix(postfixId);
+		Prefix prefix = prefixService.findPrefix(prefixId);
+		User user = new User(email,encodedPassword,firstName,lastName,username);
+		user.setGender(gender);
+		user.setCountry(country);
+		user.setPostfix(postfix);
+		user.setPrefix(prefix);
 		User result = repo.save(user);
 		return result;
 	}	

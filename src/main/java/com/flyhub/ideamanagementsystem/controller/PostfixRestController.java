@@ -1,6 +1,7 @@
 package com.flyhub.ideamanagementsystem.controller;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class PostfixRestController {
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Postfix> findPostfix(@PathVariable("id") Long id) {
+	public Postfix findPostfix(@PathVariable("id") Long id) {
 		return postfixService.findPostfix(id);
 	}
 	
@@ -47,8 +48,8 @@ public class PostfixRestController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Postfix> updatePostfix(@RequestBody Postfix postfix, @PathVariable("id") Long id){
-		Optional<Postfix> oldPostfix = postfixService.findPostfix(id);
-		if(!oldPostfix.isPresent()) {
+		Postfix oldPostfix = postfixService.findPostfix(id);
+		if(Objects.isNull(oldPostfix)) {
 			ResponseEntity.notFound().build();
 		}
 		postfix.setId(id);
@@ -57,8 +58,8 @@ public class PostfixRestController {
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<Postfix> updateSomePostfixFields(@RequestBody Postfix postfix, @PathVariable("id") Long id){
-		Optional<Postfix> oldPostfix = postfixService.findPostfix(id);
-		if(!oldPostfix.isPresent()) {
+		Postfix oldPostfix = postfixService.findPostfix(id);
+		if(Objects.isNull(oldPostfix)) {
 			ResponseEntity.notFound().build();
 		}
 		postfix.setId(id);

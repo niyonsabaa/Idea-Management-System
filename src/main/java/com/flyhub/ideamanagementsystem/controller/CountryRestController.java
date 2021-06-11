@@ -1,7 +1,7 @@
 package com.flyhub.ideamanagementsystem.controller;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +33,7 @@ public class CountryRestController {
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Country> findCountry(@PathVariable("id") Long id){
+	public Country findCountry(@PathVariable("id") Long id){
 		return countryService.findCountry(id);
 	}
 	
@@ -49,8 +49,8 @@ public class CountryRestController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Country> updateCountry(@RequestBody Country country, @PathVariable("id") Long id){
-		Optional<Country> oldCountry = countryService.findCountry(id);
-		if(! oldCountry.isPresent()) {
+		Country oldCountry = countryService.findCountry(id);
+		if(Objects.isNull(oldCountry)) {
 			return ResponseEntity.notFound().build();
 		}
 		country.setId(id);
@@ -59,8 +59,8 @@ public class CountryRestController {
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<Country> updateSomeCountryFields(@RequestBody Country country, @PathVariable("id") Long id){
-		Optional<Country> oldCountry = countryService.findCountry(id);
-		if(! oldCountry.isPresent()) {
+		Country oldCountry = countryService.findCountry(id);
+		if(Objects.isNull(oldCountry)) {
 			return ResponseEntity.notFound().build();
 		}
 		country.setId(id);

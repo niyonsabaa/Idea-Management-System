@@ -34,28 +34,36 @@ public class UserRestController {
 	}
 	
 	@PostMapping
-	public User createUser(@RequestBody User user) {
-		return userService.createUser(user);
+	public User createUser(@RequestBody User user,@RequestParam("genderId") Long genderId, 
+			@RequestParam("countryId") Long countryId, @RequestParam("postfixId")Long postfixId, 
+			@RequestParam("prefixId") Long prefixId) {
+		return userService.createUser(user,genderId,countryId,postfixId,prefixId);
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable("id") Long id){
+	public ResponseEntity<User> updateUser(@RequestBody User user, @PathVariable("id") Long id,
+			@RequestParam("genderId") Long genderId, 
+			@RequestParam("countryId") Long countryId, @RequestParam("postfixId")Long postfixId, 
+			@RequestParam("prefixId") Long prefixId){
 		User oldUser = userService.findUser(id);
 		if(Objects.isNull(oldUser)) {
 			return ResponseEntity.notFound().build();
 		}
 		user.setId(id);
-		return ResponseEntity.ok(this.userService.createUser(user));
+		return ResponseEntity.ok(this.userService.createUser(user,genderId,countryId,postfixId,prefixId));
 	}
 	
 	@PatchMapping("/{id}")
-	public ResponseEntity<User> updateSomeUserFields(@RequestBody User user, @PathVariable("id") Long id){
+	public ResponseEntity<User> updateSomeUserFields(@RequestBody User user, @PathVariable("id") Long id,
+			@RequestParam("genderId") Long genderId, 
+			@RequestParam("countryId") Long countryId, @RequestParam("postfixId")Long postfixId, 
+			@RequestParam("prefixId") Long prefixId){
 		User oldUser = userService.findUser(id);
 		if(Objects.isNull(oldUser)) {
 			return ResponseEntity.notFound().build();
 		}
 		user.setId(id);
-		return ResponseEntity.ok(this.userService.createUser(user));
+		return ResponseEntity.ok(this.userService.createUser(user,genderId,countryId,postfixId,prefixId));
 	}
 	
 	@GetMapping("/hello")

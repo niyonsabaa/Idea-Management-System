@@ -74,40 +74,31 @@ public class AppController {
 		return "signup_form";
 	}
 
-	@PostMapping("/process_register")
-	public String processRegistration(User user, RedirectAttributes redirectAttributes) {
-		User regUser = userService.checkEmail(user.getEmail());
-		// Role admin = new Role("Admin");
-		// Role normalUser = new Role("User");
-		Role normalUser = roleRepo.findByName("User");
-		if (Objects.nonNull(regUser)) {
-			redirectAttributes.addFlashAttribute("message",
-					"Registration Failed. An account with Email address " + user.getEmail() + " Already Exists");
-			return "redirect:/register";
-		}
-
-		User savedUser = userService.registerUser(user.getEmail(), user.getPassword(), user.getFirstName(),
-				user.getLastName(), user.getGender(), user.getCountryId(), user.getPostfix(), user.getPrefix(),user.getUsername());
-		// saving a user
-		if (Objects.nonNull(savedUser)) {
-			// saving Roles
-			// roleRepo.saveAll(Arrays.asList(admin, normalUser));
-			// add Roles to user
-			// savedUser.getRoles().addAll(Arrays.asList(admin,normalUser));
-			savedUser.getRoles().addAll(Arrays.asList(normalUser));
-			// update the user
-			repo.save(savedUser);
-			// saving Access Permissions
-			// permissionRepo.save(new
-			// Permissions(normalUser,"idea",true,false,false,true));
-			redirectAttributes.addFlashAttribute("message", "You have Successfully Registered. You can now Login");
-			return "redirect:/";
-		} else {
-			redirectAttributes.addFlashAttribute("message", "Registration Failed Please try again");
-			return "redirect:/register";
-		}
-	}	
-
+	/*
+	 * @PostMapping("/process_register") public String processRegistration(User
+	 * user, RedirectAttributes redirectAttributes) { User regUser =
+	 * userService.checkEmail(user.getEmail()); // Role admin = new Role("Admin");
+	 * // Role normalUser = new Role("User"); Role normalUser =
+	 * roleRepo.findByName("User"); if (Objects.nonNull(regUser)) {
+	 * redirectAttributes.addFlashAttribute("message",
+	 * "Registration Failed. An account with Email address " + user.getEmail() +
+	 * " Already Exists"); return "redirect:/register"; }
+	 * 
+	 * User savedUser = userService.registerUser(user.getEmail(),
+	 * user.getPassword(), user.getFirstName(), user.getLastName(),
+	 * user.getGender(), user.getCountry(), user.getPostfix(),
+	 * user.getPrefix(),user.getUsername()); // saving a user if
+	 * (Objects.nonNull(savedUser)) { // saving Roles //
+	 * roleRepo.saveAll(Arrays.asList(admin, normalUser)); // add Roles to user //
+	 * savedUser.getRoles().addAll(Arrays.asList(admin,normalUser));
+	 * savedUser.getRoles().addAll(Arrays.asList(normalUser)); // update the user
+	 * repo.save(savedUser); // saving Access Permissions // permissionRepo.save(new
+	 * // Permissions(normalUser,"idea",true,false,false,true));
+	 * redirectAttributes.addFlashAttribute("message",
+	 * "You have Successfully Registered. You can now Login"); return "redirect:/";
+	 * } else { redirectAttributes.addFlashAttribute("message",
+	 * "Registration Failed Please try again"); return "redirect:/register"; } }
+	 */
 	@PostMapping("/login")
 	public String login(@ModelAttribute("user") User user, RedirectAttributes redirectAttributes,
 			HttpServletRequest request) {

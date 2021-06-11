@@ -78,7 +78,7 @@
                   >
                     Add Notes
                   </CButton>
-                  <span style="margin-left:10px"></span>
+                  <span style="margin-left: 10px"></span>
                   <CButton
                     color="primary"
                     variant="outline"
@@ -209,7 +209,7 @@
                       </div>
                     </form>
                     <template #footer>
-                      <br />
+                      <p></p>
                     </template>
                   </CModal>
                 </td>
@@ -392,9 +392,9 @@ export default {
 
     saveAttachment() {
       const myHeaders = new Headers({
-        "Content-Type": "multipart/form-data",
-        Authorization: "Bearer " + this.$store.state.token,
+        "Content-Type": "multipart/form-data",        
       });
+     
       axios({
         url: "http://localhost:8080/api/v1/attachments",
         method: "POST",
@@ -404,7 +404,7 @@ export default {
         this.addAttachmentAlert = true;
         this.attachmentId = response.data.id;
         this.attachmentModal = false;
-      });
+      }); 
     },
 
     handleFileUpload() {

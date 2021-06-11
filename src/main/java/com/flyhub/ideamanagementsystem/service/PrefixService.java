@@ -1,11 +1,8 @@
 package com.flyhub.ideamanagementsystem.service;
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.flyhub.ideamanagementsystem.DaO.PrefixRepository;
 import com.flyhub.ideamanagementsystem.Entity.Prefix;
 
@@ -18,8 +15,8 @@ public class PrefixService {
 		return prefixRepo.findAll();
 	}
 	
-	public Optional<Prefix> findPrefix(Long id) {
-		return prefixRepo.findById(id);
+	public Prefix findPrefix(Long id) {
+		return prefixRepo.findById(id).get();
 	}
 	
 	public Prefix createPrefix(Prefix prefix) {

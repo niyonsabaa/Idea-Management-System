@@ -19,7 +19,7 @@ import com.flyhub.ideamanagementsystem.service.JwtUserDetailsService;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/authenticate")
+@RequestMapping("/api/v1/authenticate")
 public class JwtAuthenticationController {
 	
 	 @Autowired	 

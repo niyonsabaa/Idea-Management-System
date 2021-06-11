@@ -1,7 +1,7 @@
 package com.flyhub.ideamanagementsystem.controller;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +34,7 @@ public class GenderRestController {
 	}
 	
 	@GetMapping("/{id}")
-	public Optional<Gender> findGender(@PathVariable("id") Long id){
+	public Gender findGender(@PathVariable("id") Long id){
 		return genderService.findGender(id);
 	}
 	
@@ -50,8 +50,8 @@ public class GenderRestController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Gender> updateGender(@RequestBody Gender gender, @PathVariable("id") Long id ){
-		Optional<Gender> oldGender = genderService.findGender(id);
-		if(!oldGender.isPresent()) {
+		Gender oldGender = genderService.findGender(id);
+		if(Objects.isNull(oldGender)) {
 			return ResponseEntity.notFound().build();
 		}
 		gender.setId(id);			
@@ -60,8 +60,8 @@ public class GenderRestController {
 	
 	@PatchMapping("/{id}")
 	public ResponseEntity<Gender> updateSomeGenderFields(@RequestBody Gender gender, @PathVariable("id") Long id){
-		Optional<Gender> oldGender = genderService.findGender(id);
-		if(!oldGender.isPresent()) {
+		Gender oldGender = genderService.findGender(id);
+		if(Objects.isNull(oldGender)) {
 			return ResponseEntity.notFound().build();
 		}
 		gender.setId(id);			
