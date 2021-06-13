@@ -8,6 +8,21 @@
               <h4>User # {{ genderId }} , successfully updated.</h4>
             </CAlert>
           </div>
+          <CModal
+            title="Delete User"
+            :show.sync="deleteModal"
+            color="danger"
+          >
+            <h5>Are you sure you want to delete user {{ prefix}} {{firstName}} {{lastName}} ?</h5>
+            <div class="form-actions text-right">
+              <CButton @click="closeDeleteModal" color="danger">No</CButton>
+              <span style="margin-left: 10px" />
+              <CButton @click="deleteUser" color="success">Yes</CButton>
+            </div>
+            <template #footer>
+              <br />
+            </template>
+          </CModal>
           <CCardBody>
             <CDataTable
               :items="items"
@@ -44,7 +59,7 @@
                 <td>
                   {{ item.roles[0].name }}
                   <span v-if="item.roles[1]">
-                   {{ item.roles[1].name }} 
+                    {{ item.roles[1].name }}
                   </span>
                 </td>
               </template>
@@ -55,7 +70,7 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="deleteGender(item, index)"
+                    @click="loadDeleteModal(item, index)"
                   >
                     Delete
                   </CButton>
@@ -130,6 +145,12 @@ export default {
     return {
       items: [],
       fields,
+      deleteModal: false,
+      userId: "",
+      firstName: "",
+      lastName:"",
+      prefix:"",      
+      updateAlert: false, 
     };
   },
   mounted() {
@@ -148,6 +169,33 @@ export default {
         this.items = data;
       });
   },
-  methods: {},
+  methods: {
+    loadDeleteModal(item) {
+      this.userId = item.id;
+      this.firstName = item.firstName;
+      this.lastName = item.lastName;
+      this.prefix = item.prefix.prefixName;
+      this.deleteModal = true;
+    },
+    closeDeleteModal() {
+      this.deleteModal = false;
+    },
+    deleteUser() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+      const requestOptions = {
+        method: "DELETE",
+        headers: myHeaders,
+      };
+      fetch(
+        `http://localhost:8080/api/v1/users/${this.userId}`,
+        requestOptions
+      );
+      this.deleteModal = false;
+      document.location.reload(true);
+    },
+  },
 };
 </script>

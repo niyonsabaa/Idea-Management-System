@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div>
     <span v-if="this.$store.state.token">
       <div>
         <template>
@@ -8,6 +8,21 @@
               <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
             </CAlert>
           </div>
+          <CModal
+            title="Delete Category"
+            :show.sync="deleteModal"
+            color="danger"
+          >
+            <h5>Are you sure you want to delete {{ catName }} Category ?</h5>
+            <div class="form-actions text-right">
+              <CButton @click="closeDeleteModal" color="danger">No</CButton>
+              <span style="margin-left: 10px" />
+              <CButton @click="deleteCategory" color="success">Yes</CButton>
+            </div>
+            <template #footer>
+              <br />
+            </template>
+          </CModal>
           <CCardBody>
             <CDataTable
               :items="items"
@@ -27,7 +42,7 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="deleteGender(item, index)"
+                    @click="loadDeleteModal(item, index)"
                   >
                     Delete
                   </CButton>
@@ -37,33 +52,10 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="loadGenderModel(item, index)"
+                    @click="loadGenderModal(item, index)"
                   >
                     Edit
                   </CButton>
-
-                  <CModal
-                    title="Update Gender"
-                    :show.sync="genderModal"
-                    color="primary"
-                  >
-                    <CForm @submit="updateGender">
-                      <CInput
-                        label="Gender"
-                        required="required"
-                        v-model="gender_name"
-                        :placeholder="gender_name"
-                        description="Enter the gender name such as Male, Female, etc."
-                        type="text"
-                      />
-                      <div class="form-actions">
-                        <CButton type="submit" color="primary">Update</CButton>
-                      </div>
-                    </CForm>
-                    <template #footer>
-                      <br />
-                    </template>
-                  </CModal>
                 </td>
               </template>
             </CDataTable>
@@ -78,10 +70,14 @@
 </template>
 <script>
 const fields = [
-  { label:"#",key: "id", _style: "min-width:200px" },
+  { label: "#", key: "id", _style: "min-width:200px" },
 
-  { label:"Category", key: "categoryName", _style: "min-width:100px;" },
-  { label:"Description", key: "categoryDescription", _style: "min-width:100px;" },
+  { label: "Category", key: "categoryName", _style: "min-width:100px;" },
+  {
+    label: "Description",
+    key: "categoryDescription",
+    _style: "min-width:100px;",
+  },
 
   {
     key: "actions",
@@ -92,11 +88,15 @@ const fields = [
   },
 ];
 export default {
-    name:"CategoryList",
-    data() {
+  name: "CategoryList",
+  data() {
     return {
       items: [],
-      fields,      
+      fields,
+      deleteModal: false,
+      catId: "",
+      catName: "",
+      updateAlert: false,
     };
   },
   mounted() {
@@ -115,5 +115,28 @@ export default {
         this.items = data;
       });
   },
-}
+  methods: {
+    loadDeleteModal(item) {
+      this.catId = item.id;
+      this.catName = item.categoryName;
+      this.deleteModal = true;
+    },
+    closeDeleteModal() {
+      this.deleteModal = false;
+    },
+    deleteCategory() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+      const requestOptions = {
+        method: "DELETE",
+        headers: myHeaders,
+      };
+      fetch(`http://localhost:8080/api/v1/category/${this.catId}`, requestOptions); 
+      this.deleteModal = false;   
+      document.location.reload(true)      
+    },
+  },
+};
 </script>

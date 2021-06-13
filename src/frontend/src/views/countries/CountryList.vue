@@ -8,6 +8,21 @@
               <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
             </CAlert>
           </div>
+          <CModal
+            title="Delete Country"
+            :show.sync="deleteModal"
+            color="danger"
+          >
+            <h5>Are you sure you want to delete {{ countryName }} ?</h5>
+            <div class="form-actions text-right">
+              <CButton @click="closeDeleteModal" color="danger">No</CButton>
+              <span style="margin-left: 10px" />
+              <CButton @click="deleteCountry" color="success">Yes</CButton>
+            </div>
+            <template #footer>
+              <br />
+            </template>
+          </CModal>
           <CCardBody>
             <CDataTable
               :items="items"
@@ -27,7 +42,7 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="deleteGender(item, index)"
+                    @click="loadDeleteModal(item, index)"
                   >
                     Delete
                   </CButton>
@@ -96,7 +111,11 @@ export default {
     data() {
     return {
       items: [],
-      fields,      
+      fields,  
+      deleteModal: false,
+      countryId: "",
+      countryName: "",
+      updateAlert: false,    
     };
   },
   mounted() {
@@ -113,6 +132,29 @@ export default {
         //alert(JSON.stringify(data))
         this.items = data;
       });
+  },
+  methods: {
+    loadDeleteModal(item) {
+      this.countryId = item.id;
+      this.countryName= item.countryName;
+      this.deleteModal = true;
+    },
+    closeDeleteModal() {
+      this.deleteModal = false;
+    },
+    deleteCountry() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+      const requestOptions = {
+        method: "DELETE",
+        headers: myHeaders,
+      };
+      fetch(`http://localhost:8080/api/v1/countries/${this.countryId}`, requestOptions); 
+      this.deleteModal = false;   
+      document.location.reload(true)      
+    },
   },
 }
 </script>

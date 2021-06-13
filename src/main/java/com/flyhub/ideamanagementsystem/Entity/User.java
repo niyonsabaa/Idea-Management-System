@@ -72,8 +72,9 @@ public class User {
 	private Prefix prefix;	
 
 	// many to many relationships between the User and Role
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@ManyToMany( fetch = FetchType.LAZY)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<Role> roles = new HashSet<>();
 
 	
