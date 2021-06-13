@@ -13,8 +13,8 @@
               <CCardBody>
                 <!-- <p>{{this.$store.state.token}}</p> -->
                 <CForm @submit="login">
-                  <h1>Login</h1>
-                  <p class="text-muted">Log In to your account</p>
+                  <h1 class="text-center">Login</h1>
+                  <h6 class="text-center">Log In to your account</h6>
                   <CInput
                     placeholder="Username"
                     v-model="username"
@@ -42,39 +42,21 @@
                     </CCol>
                     <CCol col="6" class="text-right">
                       <CButton color="link" class="px-0"
-                        >Forgot password?</CButton
+                        ><h5>Forgot password?</h5></CButton
                       >
+                      <br/>
 
                       <CButton
                         href="/?#/register"
                         color="link"
-                        class="d-lg-none"
-                        >Register now!</CButton
+                        class="px-0"
+                        ><h5>Don't have an account? Register now!</h5></CButton
                       >
                     </CCol>
                   </CRow>
                 </CForm>
               </CCardBody>
-            </CCard>
-            <CCard
-              color="primary"
-              text-color="white"
-              class="text-center py-5 d-md-down-none"
-              body-wrapper
-            >
-              <CCardBody>
-                <h2>Sign up</h2>
-                <p>Create Account with The Idea manegement System.</p>
-                <CButton
-                  href="/?#/register"
-                  color="light"
-                  variant="outline"
-                  size="lg"
-                >
-                  Register Now!
-                </CButton>
-              </CCardBody>
-            </CCard>
+            </CCard>            
           </CCardGroup>
         </CCol>
       </CRow>
@@ -105,7 +87,7 @@ export default {
       fetch(`http://localhost:8080/api/v1/authenticate`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          this.$store.commit("setToken", data.token);
+          this.$store.commit("setToken", data.token);          
           this.$router.push("dashboard");
         });
     },

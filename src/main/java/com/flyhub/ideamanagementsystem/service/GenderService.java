@@ -3,7 +3,6 @@ package com.flyhub.ideamanagementsystem.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 import com.flyhub.ideamanagementsystem.DaO.GenderRepository;
 import com.flyhub.ideamanagementsystem.Entity.Gender;
 
@@ -20,7 +19,7 @@ public class GenderService {
 		return genderRepo.findById(id).get();
 	}
 	
-	public Gender createGender(@RequestBody Gender gender) {
+	public Gender createGender(Gender gender) {
 		return genderRepo.save(gender);
 	}
 	

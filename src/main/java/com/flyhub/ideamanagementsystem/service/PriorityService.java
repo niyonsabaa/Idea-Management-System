@@ -1,10 +1,8 @@
 package com.flyhub.ideamanagementsystem.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.flyhub.ideamanagementsystem.DaO.PriorityRepository;
 import com.flyhub.ideamanagementsystem.Entity.Priority;
 
@@ -20,4 +18,12 @@ public class PriorityService {
 	public Priority findPriority(Long id){
 		return priorityRepo.findById(id).get();
 	}
+	
+	public Priority createPriority(Priority priority) {
+		return priorityRepo.save(priority);
+	}
+	
+	public void deletePriority(Long id) {
+        priorityRepo.deleteById(id);
+    }
 }
