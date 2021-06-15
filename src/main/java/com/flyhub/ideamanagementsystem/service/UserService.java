@@ -26,21 +26,21 @@ public class UserService {
 	private GenderService genderService;
 	@Autowired
 	private CountryService countryService;
-	@Autowired 
+	@Autowired
 	private PostfixService postfixService;
-	@Autowired 
+	@Autowired
 	private PrefixService prefixService;
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-	
-	public List<User> findAllUsers(){
+
+	public List<User> findAllUsers() {
 		return repo.findAll();
 	}
-	
-	public User findUser(Long id){
+
+	public User findUser(Long id) {
 		return repo.findById(id).get();
 	}
-	
-	public User createUser(User user,Long genderId, Long countryId, Long postfixId, Long prefixId) {
+
+	public User createUser(User user, Long genderId, Long countryId, Long postfixId, Long prefixId) {
 		String encodedPassword = encoder.encode(user.getPassword());
 		Role normalUser = roleRepo.findByName("User");
 		User registeredUser = checkEmail(user.getEmail());
@@ -48,7 +48,7 @@ public class UserService {
 		Country country = countryService.findCountry(countryId);
 		Postfix postfix = postfixService.findPostfix(postfixId);
 		Prefix prefix = prefixService.findPrefix(prefixId);
-		if(Objects.nonNull(registeredUser)) {
+		if (Objects.nonNull(registeredUser)) {
 			return null;
 		}
 		user.setPassword(encodedPassword);
@@ -56,21 +56,37 @@ public class UserService {
 		user.setCountry(country);
 		user.setPostfix(postfix);
 		user.setPrefix(prefix);
-		User savedUser= repo.save(user);
+		User savedUser = repo.save(user);
 		savedUser.getRoles().addAll(Arrays.asList(normalUser));
-		return repo.save(savedUser);		
+		return repo.save(savedUser);
 	}
-	
+
+	public User updateUser(User user, Long genderId, Long countryId, Long postfixId, Long prefixId) {
+		User registeredUser = checkEmail(user.getEmail());
+		Gender gender = genderService.findGender(genderId);
+		Country country = countryService.findCountry(countryId);
+		Postfix postfix = postfixService.findPostfix(postfixId);
+		Prefix prefix = prefixService.findPrefix(prefixId);
+		if (Objects.nonNull(registeredUser)) {
+			return null;
+		}		
+		user.setGender(gender);
+		user.setCountry(country);
+		user.setPostfix(postfix);
+		user.setPrefix(prefix);
+		return repo.save(user);
+	}
+
 	public void deleteUser(Long id) {
 		repo.deleteById(id);
 	}
 
-	public User login(String email, String password) {		
+	public User login(String email, String password) {
 		User user = repo.findByEmail(email);
 		String savedPassword = user.getPassword();
-		if(encoder.matches(password,savedPassword)) {
-		return user;
-		}else {
+		if (encoder.matches(password, savedPassword)) {
+			return user;
+		} else {
 			return null;
 		}
 	}
@@ -80,20 +96,24 @@ public class UserService {
 		return user;
 	}
 
+	public User findUserByUsername(String username) {
+		return repo.findByUsername(username);
+	}
+
 //creating user Account
-	public User registerUser(String email, String password, String firstName, String lastName,
-		Long genderId, Long countryId, Long postfixId, Long prefixId,String username) {
+	public User registerUser(String email, String password, String firstName, String lastName, Long genderId,
+			Long countryId, Long postfixId, Long prefixId, String username) {
 		String encodedPassword = encoder.encode(password);
 		Gender gender = genderService.findGender(genderId);
 		Country country = countryService.findCountry(countryId);
 		Postfix postfix = postfixService.findPostfix(postfixId);
 		Prefix prefix = prefixService.findPrefix(prefixId);
-		User user = new User(email,encodedPassword,firstName,lastName,username);
+		User user = new User(email, encodedPassword, firstName, lastName, username);
 		user.setGender(gender);
 		user.setCountry(country);
 		user.setPostfix(postfix);
 		user.setPrefix(prefix);
 		User result = repo.save(user);
 		return result;
-	}	
+	}
 }

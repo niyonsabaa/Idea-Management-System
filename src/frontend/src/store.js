@@ -7,7 +7,9 @@ const state = {
   sidebarShow: 'responsive',
   sidebarMinimize: false,
   token:'',
-  successRegistration:false
+  successRegistration:false,
+  username:'',
+  userId:''
 }
 
 const mutations = {
@@ -27,6 +29,14 @@ const mutations = {
 
   setToken(state, currentToken){
     state.token = currentToken
+  },
+
+  setUsername(state, currentUsername){
+    state.username = currentUsername
+  },
+
+  setUserId(state,currentUserId){
+    state.userId = currentUserId
   },
 
   setSuccessRegistration(state){

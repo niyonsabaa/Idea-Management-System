@@ -26,9 +26,15 @@
         </CHeaderNavLink>
       </CHeaderNavItem>
     </CHeaderNav>
-    <CHeaderNav class="mr-4">
-      <TheHeaderDropdownAccnt />
+
+     <CHeaderNav class="mr-4"> 
+      <CHeaderNavItem class="d-md-down-none mx-2">
+        <span>{{this.$store.state.username}}</span>
+      </CHeaderNavItem>
+      <TheHeaderDropdownAccnt/>
     </CHeaderNav>
+    
+    
     <CSubheader class="px-3">
       <CBreadcrumbRouter class="border-0 mb-0" />
     </CSubheader>

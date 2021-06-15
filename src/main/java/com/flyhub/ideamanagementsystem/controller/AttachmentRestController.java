@@ -1,6 +1,11 @@
 package com.flyhub.ideamanagementsystem.controller;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +31,7 @@ import com.flyhub.ideamanagementsystem.service.AttachmentService;
 @CrossOrigin
 @RequestMapping("api/v1/attachments")
 public class AttachmentRestController {
+	private final String UPLOAD_DIR = "./uploads/";
 	@Autowired
 	private AttachmentService attachmentService;
 	@GetMapping
@@ -48,12 +54,36 @@ public class AttachmentRestController {
 		attachmentService.deleteAttachment(id);
 	}
 	
-	@GetMapping("/download")
-	public void fileUpload(HttpServletRequest request, HttpServletResponse response,
-			@RequestParam("fileName") String fileName) throws IOException {
-		this.attachmentService.downloadFile(request, response, fileName);
-		
-				
-	}
+	/*
+	 * @GetMapping("/download") public void fileUpload(HttpServletRequest request,
+	 * HttpServletResponse response,
+	 * 
+	 * @RequestParam("fileName") String fileName) throws IOException {
+	 * this.attachmentService.downloadFile(request, response, fileName);
+	 * 
+	 * 
+	 * }
+	 */
+	
+	 @GetMapping("/download")
+	    public void download(@RequestParam("fileName") String fileName,
+	                         HttpServletResponse response) throws Exception{
+		 File file = new File(UPLOAD_DIR + fileName);
+	        
+	        byte[] buffer = new byte[1024];
+	        BufferedInputStream bis = null;
+	        OutputStream os = null;	       
+	            //Determine whether the parent directory of the file exists
+	            if (file.exists()) {
+	                //Set to return file information
+	                response.setContentType("application/octet-stream;charset=UTF-8");
+	                response.setCharacterEncoding("UTF-8");
+	                os = response.getOutputStream();
+	                bis = new BufferedInputStream(new FileInputStream(file));
+	                while(bis.read(buffer) != -1){
+	                    os.write(buffer);
+	                }
+	            }	         
+	    }
 
 }

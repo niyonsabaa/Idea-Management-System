@@ -44,19 +44,16 @@
                       <CButton color="link" class="px-0"
                         ><h5>Forgot password?</h5></CButton
                       >
-                      <br/>
+                      <br />
 
-                      <CButton
-                        href="/?#/register"
-                        color="link"
-                        class="px-0"
+                      <CButton href="/?#/register" color="link" class="px-0"
                         ><h5>Don't have an account? Register now!</h5></CButton
                       >
                     </CCol>
                   </CRow>
                 </CForm>
               </CCardBody>
-            </CCard>            
+            </CCard>
           </CCardGroup>
         </CCol>
       </CRow>
@@ -65,12 +62,14 @@
 </template>
 
 <script>
+import jwt_decode from "jwt-decode";
 export default {
   name: "Login",
   data() {
     return {
       username: "",
       password: "",
+      decodedToken: "",
     };
   },
   methods: {
@@ -87,8 +86,29 @@ export default {
       fetch(`http://localhost:8080/api/v1/authenticate`, requestOptions)
         .then((response) => response.json())
         .then((data) => {
-          this.$store.commit("setToken", data.token);          
+          this.$store.commit("setToken", data.token);
+          this.decodedToken = jwt_decode(data.token);
+          this.$store.commit("setUsername", this.decodedToken.sub);
+          this.setAuthId();
           this.$router.push("dashboard");
+        });
+    },
+
+    setAuthId() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+      fetch(
+        `http://localhost:8080/api/v1/users/user?username=${this.$store.state.username}`,
+        {
+          method: "GET",
+          headers: myHeaders,
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          this.$store.commit("setUserId",data.id);
         });
     },
   },

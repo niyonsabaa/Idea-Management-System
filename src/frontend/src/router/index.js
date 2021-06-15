@@ -27,6 +27,7 @@ import NewPrefix from "../views/prefix/NewPrefix.vue"
 import PrefixList from "../views/prefix/PrefixList.vue"
 import NewPriority from "../views/priority/NewPriority.vue"
 import PriorityList from "../views/priority/PriorityList.vue"
+import Profile from "../views/Profile.vue";
 
 Vue.use(Router)
 
@@ -76,7 +77,12 @@ function configRoutes() {
           path: '/users',
           name: 'Users',
           component: Users,
-        },       
+        }, 
+        {
+          path: '/profile',
+          name: 'Profile',
+          component: Profile,
+        },      
         {
           path: 'ideas',
           redirect: '/ideas/cards',

@@ -1,5 +1,10 @@
 <template>
-  <span v-if="this.$store.state.token">    
+  <span v-if="this.$store.state.token">
+     <div v-if="downloadAlert" style="font-size:18px">
+        <CAlert color="primary" closeButton>
+          <p>Check Your Downloads Folder. Attachment <strong>" {{attachName}} "</strong> has been, successfully downloaded.</p>
+        </CAlert>
+      </div>
     <CCardBody>
       <CDataTable
         :items="items"
@@ -12,16 +17,14 @@
         sorter
         pagination
       >
-      <template #idea="{item}">
-      <td>
-          {{item.idea.ideaTitle}}
-      </td>      
-    </template>
-    <template #user="{item}">
-      <td>
-          {{item.idea.user.firstName}} {{item.idea.user.lastName}}
-      </td>      
-    </template>
+        <template #idea="{ item }">
+          <td>
+            {{ item.idea.ideaTitle }}
+          </td>
+        </template>
+        <template #user="{ item }">
+          <td>{{ item.idea.user.firstName }} {{ item.idea.user.lastName }}</td>
+        </template>
         <template #actions="{ item, index }">
           <td class="d-flex py-2">
             <CButton
@@ -43,6 +46,7 @@
   </span>
 </template>
 <script>
+import axios from "axios";
 const fields = [
   { label: "#", key: "id" },
   { label: "Attachment Name", key: "attachmentName" },
@@ -64,6 +68,8 @@ export default {
     return {
       items: "",
       fields,
+      downloadAlert:false,
+      attachName:""
     };
   },
   mounted() {
@@ -88,16 +94,30 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + this.$store.state.token,
       });
-      const requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-      };
-      fetch(
-        `http://localhost:8080/api/v1/attachments/download?fileName=${item.attachmentName}`,
-        requestOptions
-      ).then((response) => {
-        alert(JSON.stringify(response.data));
-      });
+
+      axios
+        .get(
+          `http://localhost:8080/api/v1/attachments/download?fileName=${item.attachmentName}`,
+          { responseType: "blob" }
+        )
+        .then((res) => {
+          this.attachName = item.attachmentName;
+          this.downloadAlert = true;
+          const blob = new Blob([res.data]);
+          const fileName = item.attachmentName;
+          if ("download" in document.createElement("a")) {
+            const link = document.createElement("a");
+            link.download = fileName;
+            link.style.display = "none";
+            link.href = URL.createObjectURL(blob);
+            document.body.appendChild(link);
+            link.click();
+            URL.revokeObjectURL(link.href);
+            document.body.removeChild(link);
+          } else {
+            navigator.msSaveBlob(blob, fileName);
+          }
+        });
     },
   },
 };

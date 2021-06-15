@@ -7,12 +7,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.thymeleaf.exceptions.TemplateInputException;
 
 import com.flyhub.ideamanagementsystem.exception.ApiException;
 
-@Controller
+@RestController
+//@Controller
 @ControllerAdvice
 public class ExceptionsController {		
 	 @ExceptionHandler(EntityNotFoundException.class)
@@ -50,6 +52,13 @@ public class ExceptionsController {
 			model.addAttribute("errorName",exception.getErrorName());
 			return "errors";
 		}
-
+	 @ExceptionHandler(Exception.class)
+		public ApiException handleGlobalException( Exception ex,WebRequest request,Model model) {
+			ApiException exception = new ApiException(ex.getMessage(), request.getDescription(false),ex.getClass().getSimpleName());
+			model.addAttribute("message",exception.getMessage());
+			model.addAttribute("path",exception.getPath());
+			model.addAttribute("errorName",exception.getErrorName());
+			return exception;
+		}
 }
  

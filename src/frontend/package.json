@@ -41,6 +41,7 @@
     "@coreui/vue-chartjs": "^1.0.6",
     "axios": "^0.21.1",
     "babel-jest": "26.6.3",
+    "jwt-decode": "^3.1.2",
     "vue": "~2.6.12",
     "vue-jest": "3.0.7",
     "vue-router": "^3.5.1",

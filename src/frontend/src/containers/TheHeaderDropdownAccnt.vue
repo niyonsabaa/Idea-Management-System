@@ -1,4 +1,5 @@
 <template>
+
   <CDropdown
     inNav
     class="c-header-nav-items"
@@ -6,8 +7,8 @@
     add-menu-classes="pt-0"
   >
     <template #toggler>
-      <CHeaderNavLink>
-        <div class="c-avatar">
+      <CHeaderNavLink>        
+        <div class="c-avatar">          
           <img
             src="img/avatars/1.jpg"
             class="c-avatar-img "
@@ -16,11 +17,11 @@
       </CHeaderNavLink>
     </template>
     <CDropdownHeader tag="div" class="text-center" color="light">
-      <strong>Niyonsaba Alex</strong>
+      My Account
     </CDropdownHeader>
     
     
-    <CDropdownItem>
+    <CDropdownItem @click="viewProfile">
       <CIcon name="cil-user" /> Profile
     </CDropdownItem>
     <CDropdownItem>
@@ -49,7 +50,11 @@ export default {
       sessionStorage.clear();
       document.location.reload(true)
       this.$router.push("/") 
-    }
+    },
+    viewProfile(){      
+      this.$router.push("/profile");
+      document.location.reload(true);
+      }
   }
 }
 </script>

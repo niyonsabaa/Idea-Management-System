@@ -6,7 +6,7 @@
           <h4>Gender Record # {{ genderId }} is successfully created.</h4>
         </CAlert>
       </div>
-      <CRow>
+      <CRow>        
         <CCol lg="12">
           <transition name="fade">
             <CCard v-if="show">

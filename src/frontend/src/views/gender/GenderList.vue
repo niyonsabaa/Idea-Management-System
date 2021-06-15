@@ -2,7 +2,7 @@
   <div>
     <span v-if="this.$store.state.token">
       <div>
-        <template>
+        <template>       
           <div v-if="updateAlert">
             <CAlert color="primary" closeButton>
               <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
@@ -88,11 +88,10 @@
   </div>
 </template>
 <script>
+
 const fields = [
   { key: "id", _style: "min-width:200px" },
-
   { key: "genderName", _style: "min-width:100px;" },
-
   {
     key: "actions",
     label: "Actions",
@@ -107,15 +106,16 @@ export default {
   data() {
     return {
       items: [],
-      fields,
+      fields:"",
       genderModal: false,
       deleteModal: false,
       genderId: "",
       gender_name: "",
       updateAlert: false,
+      decodedToken,
     };
   },
-  mounted() {
+  mounted() {  
     const myHeaders = new Headers({
       "Content-Type": "application/json",
       Authorization: "Bearer " + this.$store.state.token,

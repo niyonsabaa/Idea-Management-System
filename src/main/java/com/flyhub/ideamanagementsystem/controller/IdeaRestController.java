@@ -53,7 +53,8 @@ public class IdeaRestController {
 		if(Objects.isNull(oldIdea)) {
 			return ResponseEntity.notFound().build();
 		}
-		idea.setId(id);			
+		idea.setId(id);	
+		idea.setDateOfSubmission(oldIdea.getDateOfSubmission());
 		return ResponseEntity.ok(this.ideaService.createIdea(idea, userId, categoryId, priorityId));
 	}
 	

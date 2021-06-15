@@ -22,7 +22,7 @@ import com.flyhub.ideamanagementsystem.service.UserService;
 @RequestMapping("api/v1/users")
 public class UserRestController {
 	@Autowired 
-	private UserService userService;
+	private UserService userService;	
 	
 	@GetMapping
 	public List<User> findAllUsers(){
@@ -32,6 +32,11 @@ public class UserRestController {
 	@GetMapping("/{id}")
 	public User findUser(@PathVariable("id") Long id){
 		return userService.findUser(id);
+	}
+	
+	@GetMapping("/user")
+	public User findUserByUsername(@RequestParam("username") String username){
+		return userService.findUserByUsername(username);
 	}
 	
 	@PostMapping
@@ -56,21 +61,11 @@ public class UserRestController {
 			return ResponseEntity.notFound().build();
 		}
 		user.setId(id);
-		return ResponseEntity.ok(this.userService.createUser(user,genderId,countryId,postfixId,prefixId));
-	}
-	
-	@PatchMapping("/{id}")
-	public ResponseEntity<User> updateSomeUserFields(@RequestBody User user, @PathVariable("id") Long id,
-			@RequestParam("genderId") Long genderId, 
-			@RequestParam("countryId") Long countryId, @RequestParam("postfixId")Long postfixId, 
-			@RequestParam("prefixId") Long prefixId){
-		User oldUser = userService.findUser(id);
-		if(Objects.isNull(oldUser)) {
-			return ResponseEntity.notFound().build();
-		}
-		user.setId(id);
-		return ResponseEntity.ok(this.userService.createUser(user,genderId,countryId,postfixId,prefixId));
-	}
+		user.setPassword(oldUser.getPassword());
+		user.setUsername(oldUser.getUsername());
+		user.setRoles(oldUser.getRoles());
+		return ResponseEntity.ok(this.userService.updateUser(user,genderId,countryId,postfixId,prefixId));
+	}	
 	
 	@GetMapping("/hello")
 	public String sayHello(@RequestParam("name") String name) {

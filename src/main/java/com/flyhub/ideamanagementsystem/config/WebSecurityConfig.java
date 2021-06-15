@@ -58,6 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	and().authorizeRequests().antMatchers("/api/v1/postfix").permitAll().
 	and().authorizeRequests().antMatchers("/api/v1/prefix").permitAll().
 	and().authorizeRequests().antMatchers("/api/v1/countries").permitAll().
+	and().authorizeRequests().antMatchers("/api/v1/attachments/download").permitAll().
 	// all other requests need to be authenticated
 	anyRequest().authenticated().and().
 	// make sure we use stateless session; session won't be used to

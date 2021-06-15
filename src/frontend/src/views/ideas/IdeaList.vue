@@ -387,8 +387,9 @@ export default {
       )
         .then((response) => response.json())
         .then((data) => {
-          this.ideaId = data.id;
+          this.ideaId = data.id;          
           this.updateAlert = true;
+          document.location.reload(true);
         });
     },
 

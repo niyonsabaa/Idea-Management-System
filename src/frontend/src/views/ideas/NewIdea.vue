@@ -146,13 +146,13 @@ export default {
         }),
       };
       fetch(
-        `http://localhost:8080/api/v1/ideas/?userId=1&categoryId=${this.category}&priorityId=${this.priority}`,
+        `http://localhost:8080/api/v1/ideas/?userId=${this.$store.state.userId}&categoryId=${this.category}&priorityId=${this.priority}`,
         requestOptions
       )
         .then((response) => response.json())
         .then((data) => {
           this.ideaId = data.id;
-          this.createIdeaAlert = true;
+          this.createIdeaAlert = true;          
         });
     },
   },
