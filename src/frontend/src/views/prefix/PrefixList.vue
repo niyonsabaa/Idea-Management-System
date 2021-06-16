@@ -1,18 +1,14 @@
 <template>
-    <div>
+  <div>
     <span v-if="this.$store.state.token">
       <div>
         <template>
           <div v-if="updateAlert">
             <CAlert color="primary" closeButton>
-              <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
+              <h4>Prefix Record # {{ prefixId }} , successfully updated.</h4>
             </CAlert>
           </div>
-          <CModal
-            title="Delete Prefix"
-            :show.sync="deleteModal"
-            color="danger"
-          >
+          <CModal title="Delete Prefix" :show.sync="deleteModal" color="danger">
             <h5>Are you sure you want to delete prefix {{ prefixName }} ?</h5>
             <div class="form-actions text-right">
               <CButton @click="closeDeleteModal" color="danger">No</CButton>
@@ -52,23 +48,22 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="loadGenderModel(item, index)"
+                    @click="loadUpdateModal(item, index)"
                   >
                     Edit
                   </CButton>
 
                   <CModal
-                    title="Update Gender"
-                    :show.sync="genderModal"
+                    title="Update Prefix"
+                    :show.sync="updateModal"
                     color="primary"
                   >
-                    <CForm @submit="updateGender">
+                    <CForm @submit="updatePrefix">
                       <CInput
-                        label="Gender"
+                        label="Prefix"
                         required="required"
-                        v-model="gender_name"
-                        :placeholder="gender_name"
-                        description="Enter the gender name such as Male, Female, etc."
+                        v-model="prefixName"
+                        :placeholder="prefixName"
                         type="text"
                       />
                       <div class="form-actions">
@@ -93,9 +88,9 @@
 </template>
 <script>
 const fields = [
-  { label:"#",key: "id", _style: "min-width:200px" },
+  { label: "#", key: "id", _style: "min-width:200px" },
 
-  { label:"Prefix",key: "prefixName", _style: "min-width:100px;" },
+  { label: "Prefix", key: "prefixName", _style: "min-width:100px;" },
 
   {
     key: "actions",
@@ -106,15 +101,16 @@ const fields = [
   },
 ];
 export default {
-    name:"PrefixList",
-    data() {
+  name: "PrefixList",
+  data() {
     return {
       items: [],
-      fields, 
+      fields,
       deleteModal: false,
+      updateModal: false,
       prefixId: "",
       prefixName: "",
-      updateAlert: false,     
+      updateAlert: false,
     };
   },
   mounted() {
@@ -136,10 +132,17 @@ export default {
 
   methods: {
     loadDeleteModal(item) {
-      this.prefixId= item.id;
+      this.prefixId = item.id;
       this.prefixName = item.prefixName;
       this.deleteModal = true;
     },
+
+    loadUpdateModal(item) {
+      this.prefixId = item.id;
+      this.prefixName = item.prefixName;
+      this.updateModal = true;
+    },
+
     closeDeleteModal() {
       this.deleteModal = false;
     },
@@ -152,10 +155,37 @@ export default {
         method: "DELETE",
         headers: myHeaders,
       };
-      fetch(`http://localhost:8080/api/v1/prefix/${this.prefixId}`, requestOptions); 
-      this.deleteModal = false;   
-      document.location.reload(true)      
+      fetch(
+        `http://localhost:8080/api/v1/prefix/${this.prefixId}`,
+        requestOptions
+      );
+      this.deleteModal = false;
+      document.location.reload(true);
+    },
+
+    updatePrefix() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify({
+          prefixName: this.prefixName,
+        }),
+      };
+      fetch(
+        `http://localhost:8080/api/v1/prefix/${this.prefixId}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          this.preId = data.id;
+          this.updateAlert = true;
+          document.location.reload(true);
+        });
     },
   },
-}
+};
 </script>

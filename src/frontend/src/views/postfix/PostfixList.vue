@@ -1,11 +1,11 @@
 <template>
-    <div>
+  <div>
     <span v-if="this.$store.state.token">
       <div>
         <template>
           <div v-if="updateAlert">
             <CAlert color="primary" closeButton>
-              <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
+              <h4>Postfix Record # {{ postfixId }} , successfully updated.</h4>
             </CAlert>
           </div>
           <CModal
@@ -52,23 +52,22 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="loadGenderModel(item, index)"
+                    @click="loadUpdateModal(item, index)"
                   >
                     Edit
                   </CButton>
 
                   <CModal
-                    title="Update Gender"
-                    :show.sync="genderModal"
+                    title="Update Postfix"
+                    :show.sync="updateModal"
                     color="primary"
                   >
-                    <CForm @submit="updateGender">
+                    <CForm @submit="updatePostfix">
                       <CInput
-                        label="Gender"
+                        label="Postfix"
                         required="required"
-                        v-model="gender_name"
-                        :placeholder="gender_name"
-                        description="Enter the gender name such as Male, Female, etc."
+                        v-model="postfixName"
+                        :placeholder="postfixName"
                         type="text"
                       />
                       <div class="form-actions">
@@ -93,9 +92,9 @@
 </template>
 <script>
 const fields = [
-  { label:"#",key: "id", _style: "min-width:200px" },
+  { label: "#", key: "id", _style: "min-width:200px" },
 
-  { label:"Postfix",key: "postfixName", _style: "min-width:100px;" },
+  { label: "Postfix", key: "postfixName", _style: "min-width:100px;" },
 
   {
     key: "actions",
@@ -106,20 +105,21 @@ const fields = [
   },
 ];
 export default {
-    name:"PostfixList",
-    data() {
+  name: "PostfixList",
+  data() {
     return {
       items: [],
       fields,
       deleteModal: false,
+      updateModal: false,
       postfixId: "",
       postfixName: "",
-      updateAlert: false,        
+      updateAlert: false,
     };
   },
   mounted() {
     const myHeaders = new Headers({
-      "Content-Type": "application/json",      
+      "Content-Type": "application/json",
     });
 
     fetch("http://localhost:8080/api/v1/postfix", {
@@ -127,19 +127,27 @@ export default {
       headers: myHeaders,
     })
       .then((response) => response.json())
-      .then((data) => {        
+      .then((data) => {
         this.items = data;
       });
   },
   methods: {
     loadDeleteModal(item) {
-      this.postfixId= item.id;
+      this.postfixId = item.id;
       this.postfixName = item.postfixName;
       this.deleteModal = true;
     },
+
+    loadUpdateModal(item) {
+      this.postfixId = item.id;
+      this.postfixName = item.postfixName;
+      this.updateModal = true;
+    },
+
     closeDeleteModal() {
       this.deleteModal = false;
     },
+
     deletePostfix() {
       const myHeaders = new Headers({
         "Content-Type": "application/json",
@@ -149,10 +157,34 @@ export default {
         method: "DELETE",
         headers: myHeaders,
       };
-      fetch(`http://localhost:8080/api/v1/postfix/${this.postfixId}`, requestOptions); 
-      this.deleteModal = false;   
-      document.location.reload(true)      
+      fetch(
+        `http://localhost:8080/api/v1/postfix/${this.postfixId}`,
+        requestOptions
+      );
+      this.deleteModal = false;
+      document.location.reload(true);
+    },
+
+    updatePostfix() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify({
+          postfixName: this.postfixName,
+        }),
+      };
+      fetch(`http://localhost:8080/api/v1/postfix/${this.postfixId}`, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
+          this.postfixId = data.id;
+          this.updateAlert = true;
+          document.location.reload(true);
+        });
     },
   },
-}
+};
 </script>

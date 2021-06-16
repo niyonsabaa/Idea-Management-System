@@ -5,15 +5,14 @@
         <template>
           <div v-if="updateAlert">
             <CAlert color="primary" closeButton>
-              <h4>User # {{ genderId }} , successfully updated.</h4>
+              <h4>User # {{ userId }} , successfully updated.</h4>
             </CAlert>
           </div>
-          <CModal
-            title="Delete User"
-            :show.sync="deleteModal"
-            color="danger"
-          >
-            <h5>Are you sure you want to delete user {{ prefix}} {{firstName}} {{lastName}} ?</h5>
+          <CModal title="Delete User" :show.sync="deleteModal" color="danger">
+            <h5>
+              Are you sure you want to delete user {{ prefix }} {{ firstName }}
+              {{ lastName }} ?
+            </h5>
             <div class="form-actions text-right">
               <CButton @click="closeDeleteModal" color="danger">No</CButton>
               <span style="margin-left: 10px" />
@@ -80,28 +79,109 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="loadGenderModel(item, index)"
+                    @click="loadUpdateModal(item, index)"
                   >
                     Edit
                   </CButton>
 
                   <CModal
-                    title="Update Gender"
-                    :show.sync="genderModal"
+                    title="Update User"
+                    :show.sync="updateModal"
                     color="primary"
                   >
-                    <CForm @submit="updateGender">
-                      <CInput
-                        label="Gender"
-                        required="required"
-                        v-model="gender_name"
-                        :placeholder="gender_name"
-                        description="Enter the gender name such as Male, Female, etc."
-                        type="text"
-                      />
-                      <div class="form-actions">
-                        <CButton type="submit" color="primary">Update</CButton>
-                      </div>
+                    <CForm @submit="updateUser">
+                      <CRow>
+                        <CCol md="6">
+                          <CInput
+                            label="Email Address"
+                            type="email"
+                            v-model="email"
+                            :placeholder="email"
+                            required="required"
+                          />
+                          <label>Prefix</label>
+                          <select
+                            class="form-control"
+                            v-model="prefix"
+                            required="required"
+                          >
+                            <option
+                              :value="pref.id"
+                              v-for="pref in prefixData"
+                              :key="pref.prefixName"
+                            >
+                              {{ pref.prefixName }}
+                            </option>
+                          </select>
+
+                          <CInput
+                            label="First Name"
+                            type="text"
+                            v-model="firstName"
+                            :placeholder="firstName"
+                            required="required"
+                          />
+
+                          <CInput
+                            label="Last Name"
+                            type="text"
+                            v-model="lastName"
+                            :placeholder="lastName"
+                            required="required"
+                          />
+                        </CCol>
+                        <CCol md="6">
+                          <label>Postfix</label>
+                          <select
+                            class="form-control"
+                            v-model="postfix"
+                            required="required"
+                          >
+                            <option
+                              :value="postf.id"
+                              v-for="postf in postfixData"
+                              :key="postf.postfixName"
+                            >
+                              {{ postf.postfixName }}
+                            </option>
+                          </select>
+
+                          <label>Gender</label>
+                          <select
+                            class="form-control"
+                            v-model="gender"
+                            required="required"
+                          >
+                            <option
+                              :value="gender.id"
+                              v-for="gender in genderData"
+                              :key="gender.genderName"
+                            >
+                              {{ gender.genderName }}
+                            </option>
+                          </select>
+
+                          <label>Country</label>
+                          <select
+                            class="form-control"
+                            v-model="country"
+                            required="required"
+                          >
+                            <option
+                              :value="country.id"
+                              v-for="country in countryData"
+                              :key="country.countryName"
+                            >
+                              {{ country.countryCode }}
+                              {{ country.countryName }}
+                            </option>
+                          </select>
+                          <br /><br /><br />
+                          <CButton color="primary" type="submit" block
+                            >Update</CButton
+                          >
+                        </CCol>
+                      </CRow>
                     </CForm>
                     <template #footer>
                       <br />
@@ -146,11 +226,21 @@ export default {
       items: [],
       fields,
       deleteModal: false,
+      updateModal: false,
       userId: "",
       firstName: "",
-      lastName:"",
-      prefix:"",      
-      updateAlert: false, 
+      lastName: "",
+      prefix: "",
+      email: "",
+      updateAlert: false,
+      prefixData: [],
+      postfixDta: [],
+      genderData: [],
+      countryData: [],
+      prefix: "",
+      postfix: "",
+      gender: "",
+      country: "",
     };
   },
   mounted() {
@@ -168,6 +258,42 @@ export default {
         //alert(JSON.stringify(data))
         this.items = data;
       });
+
+    fetch("http://localhost:8080/api/v1/postfix", {
+      method: "GET",
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.postfixData = data;
+      });
+
+    fetch("http://localhost:8080/api/v1/prefix", {
+      method: "GET",
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.prefixData = data;
+      });
+
+    fetch("http://localhost:8080/api/v1/countries", {
+      method: "GET",
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.countryData = data;
+      });
+
+    fetch("http://localhost:8080/api/v1/gender", {
+      method: "GET",
+      headers: myHeaders,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.genderData = data;
+      });
   },
   methods: {
     loadDeleteModal(item) {
@@ -177,6 +303,15 @@ export default {
       this.prefix = item.prefix.prefixName;
       this.deleteModal = true;
     },
+
+    loadUpdateModal(item) {
+      this.userId = item.id;
+      this.firstName = item.firstName;
+      this.lastName = item.lastName;
+      this.email = item.email;
+      this.updateModal = true;
+    },
+
     closeDeleteModal() {
       this.deleteModal = false;
     },
@@ -195,6 +330,44 @@ export default {
       );
       this.deleteModal = false;
       document.location.reload(true);
+    },
+
+    updateUser() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+
+      /* const requestOptions = {
+          method: "PUT",
+          headers: myHeaders,
+          body: {
+            email: "alexnewzniyo@gmail.com",
+            firstName: "Kwiringira",
+            lastName: "Alex",
+          },
+        }; */
+
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify({
+          email: this.email,
+          firstName: this.firstName,
+          lastName: this.lastName,
+        }),
+      };
+
+      fetch(
+        `http://localhost:8080/api/v1/users/${this.userId}?genderId=${this.gender}&countryId=${this.country}&postfixId=${this.postfix}&prefixId=${this.prefix}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then(() => {
+          this.updateModal = false;
+          this.updateAlert = true;
+          document.location.reload(true);
+        });
     },
   },
 };

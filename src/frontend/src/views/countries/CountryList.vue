@@ -1,11 +1,11 @@
 <template>
-   <div>
+  <div>
     <span v-if="this.$store.state.token">
       <div>
         <template>
           <div v-if="updateAlert">
             <CAlert color="primary" closeButton>
-              <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
+              <h4>Country Record # {{ countryId }} , successfully updated.</h4>
             </CAlert>
           </div>
           <CModal
@@ -52,23 +52,29 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="loadGenderModel(item, index)"
+                    @click="loadUpdateModel(item, index)"
                   >
                     Edit
                   </CButton>
 
                   <CModal
-                    title="Update Gender"
-                    :show.sync="genderModal"
+                    title="Update Country"
+                    :show.sync="updateModal"
                     color="primary"
                   >
-                    <CForm @submit="updateGender">
+                    <CForm @submit="updateCountry">
                       <CInput
-                        label="Gender"
+                        label="Country"
                         required="required"
-                        v-model="gender_name"
-                        :placeholder="gender_name"
-                        description="Enter the gender name such as Male, Female, etc."
+                        v-model="countryName"
+                        :placeholder="countryName"
+                        type="text"
+                      />
+                      <CInput
+                        label="Code"
+                        required="required"
+                        v-model="countryCode"
+                        :placeholder="countryCode"
                         type="text"
                       />
                       <div class="form-actions">
@@ -89,14 +95,14 @@
     <span v-else>
       {{ this.$router.push("/") }}
     </span>
-  </div> 
+  </div>
 </template>
 <script>
 const fields = [
-  { label:"#",key: "id", _style: "min-width:200px" },
+  { label: "#", key: "id", _style: "min-width:200px" },
 
-  { label:"Country", key: "countryName", _style: "min-width:100px;" },
-  { label:"Code", key: "countryCode", _style: "min-width:100px;" },
+  { label: "Country", key: "countryName", _style: "min-width:100px;" },
+  { label: "Code", key: "countryCode", _style: "min-width:100px;" },
 
   {
     key: "actions",
@@ -107,20 +113,23 @@ const fields = [
   },
 ];
 export default {
-    name:"CountryList",
-    data() {
+  name: "CountryList",
+  data() {
     return {
       items: [],
-      fields,  
+      fields,
       deleteModal: false,
       countryId: "",
       countryName: "",
-      updateAlert: false,    
+      countryCode: "",
+      updateAlert: false,
+      updateModal: false,
+      countryModal: false,
     };
   },
   mounted() {
     const myHeaders = new Headers({
-      "Content-Type": "application/json",      
+      "Content-Type": "application/json",
     });
 
     fetch("http://localhost:8080/api/v1/countries", {
@@ -136,8 +145,15 @@ export default {
   methods: {
     loadDeleteModal(item) {
       this.countryId = item.id;
-      this.countryName= item.countryName;
+      this.countryName = item.countryName;
       this.deleteModal = true;
+    },
+
+    loadUpdateModel(item) {
+      this.countryId = item.id;
+      this.countryName = item.countryName;
+      this.countryCode = item.countryCode;
+      this.updateModal = true;
     },
     closeDeleteModal() {
       this.deleteModal = false;
@@ -151,10 +167,41 @@ export default {
         method: "DELETE",
         headers: myHeaders,
       };
-      fetch(`http://localhost:8080/api/v1/countries/${this.countryId}`, requestOptions); 
-      this.deleteModal = false;   
-      document.location.reload(true)      
+      fetch(
+        `http://localhost:8080/api/v1/countries/${this.countryId}`,
+        requestOptions
+      );
+      this.deleteModal = false;
+      document.location.reload(true);
+    },
+
+    updateCountry() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+
+      const requestOptions = {
+        method: "PUT",
+        headers: myHeaders,
+        body: JSON.stringify({
+          countryName: this.countryName,
+          countryCode: this.countryCode,
+        }),
+      };
+
+      this.genderModal = false;
+      fetch(
+        `http://localhost:8080/api/v1/countries/${this.countryId}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          this.countryId = data.id;
+          this.updateAlert = true;
+          document.location.reload(true);
+        });
     },
   },
-}
+};
 </script>

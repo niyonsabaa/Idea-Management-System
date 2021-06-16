@@ -2,14 +2,14 @@
   <div>
     <span v-if="this.$store.state.token">
       <div>
-        <template>       
+        <template>
           <div v-if="updateAlert">
             <CAlert color="primary" closeButton>
               <h4>Gender Record # {{ genderId }} , successfully updated.</h4>
             </CAlert>
           </div>
-          <CModal title="Delete Gender" :show.sync="deleteModal" color="danger">
-            <h5>Are you sure you want to delete Gender {{ gender_name }} ?</h5>
+          <CModal title="Delete Prefix" :show.sync="deleteModal" color="danger">
+            <h5>Are you sure you want to delete Gender {{ genderName }} ?</h5>
             <div class="form-actions text-right">
               <CButton @click="closeDeleteModal" color="danger">No</CButton>
               <span style="margin-left: 10px" />
@@ -48,23 +48,22 @@
                     variant="outline"
                     square
                     size="sm"
-                    @click="loadGenderModel(item, index)"
+                    @click="loadUpdateModal(item, index)"
                   >
                     Edit
                   </CButton>
 
                   <CModal
                     title="Update Gender"
-                    :show.sync="genderModal"
+                    :show.sync="updateModal"
                     color="primary"
                   >
                     <CForm @submit="updateGender">
                       <CInput
                         label="Gender"
                         required="required"
-                        v-model="gender_name"
-                        :placeholder="gender_name"
-                        description="Enter the gender name such as Male, Female, etc."
+                        v-model="genderName"
+                        :placeholder="genderName"
                         type="text"
                       />
                       <div class="form-actions">
@@ -88,10 +87,11 @@
   </div>
 </template>
 <script>
-
 const fields = [
-  { key: "id", _style: "min-width:200px" },
-  { key: "genderName", _style: "min-width:100px;" },
+  { label: "#", key: "id", _style: "min-width:200px" },
+
+  { label: "Gender", key: "genderName", _style: "min-width:100px;" },
+
   {
     key: "actions",
     label: "Actions",
@@ -100,22 +100,20 @@ const fields = [
     filter: false,
   },
 ];
-
 export default {
   name: "GenderList",
   data() {
     return {
       items: [],
-      fields:"",
-      genderModal: false,
+      fields,
       deleteModal: false,
+      updateModal: false,
       genderId: "",
-      gender_name: "",
+      genderName: "",
       updateAlert: false,
-      decodedToken,
     };
   },
-  mounted() {  
+  mounted() {
     const myHeaders = new Headers({
       "Content-Type": "application/json",
       Authorization: "Bearer " + this.$store.state.token,
@@ -126,8 +124,7 @@ export default {
       headers: myHeaders,
     })
       .then((response) => response.json())
-      .then((data) => {
-        //alert(JSON.stringify(data))
+      .then((data) => {        
         this.items = data;
       });
   },
@@ -135,12 +132,20 @@ export default {
   methods: {
     loadDeleteModal(item) {
       this.genderId = item.id;
-      this.gender_name = item.genderName;
+      this.genderName = item.genderName;
       this.deleteModal = true;
     },
+
+    loadUpdateModal(item) {
+      this.genderId = item.id;
+      this.genderName = item.genderName;
+      this.updateModal = true;
+    },
+
     closeDeleteModal() {
       this.deleteModal = false;
     },
+
     deleteGender() {
       const myHeaders = new Headers({
         "Content-Type": "application/json",
@@ -158,24 +163,18 @@ export default {
       document.location.reload(true);
     },
 
-    loadGenderModel(item) {
-      this.genderId = item.id;
-      this.gender_name = item.genderName;
-      this.genderModal = true;
-    },
     updateGender() {
       const myHeaders = new Headers({
         "Content-Type": "application/json",
         Authorization: "Bearer " + this.$store.state.token,
       });
-
       const requestOptions = {
-        method: "PATCH",
+        method: "PUT",
         headers: myHeaders,
-        body: JSON.stringify({ genderName: this.gender_name }),
+        body: JSON.stringify({
+          genderName: this.genderName,
+        }),
       };
-
-      this.genderModal = false;
       fetch(
         `http://localhost:8080/api/v1/gender/${this.genderId}`,
         requestOptions
@@ -184,6 +183,7 @@ export default {
         .then((data) => {
           this.genderId = data.id;
           this.updateAlert = true;
+          document.location.reload(true);
         });
     },
   },
