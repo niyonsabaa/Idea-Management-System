@@ -60,16 +60,18 @@
               </template>
 
               <template #actions="{ item, index }">
-                <td class="d-flex py-2">
-                  <CButton
-                    color="danger"
-                    variant="outline"
-                    square
-                    size="sm"
-                    @click="loadDeleteModal(item, index)"
-                  >
-                    Delete
-                  </CButton>
+                <td class="d-flex py-2" v-if="($store.state.role=='Admin')||(item.user.id==$store.state.userId)">
+                  <template v-if="$store.state.role=='Admin'">
+                    <CButton
+                      color="danger"
+                      variant="outline"
+                      square
+                      size="sm"
+                      @click="loadDeleteModal(item, index)"
+                    >
+                      Delete
+                    </CButton>
+                  </template>
                   <span style="margin-left: 10px"></span>
                   <CButton
                     color="primary"
@@ -387,7 +389,7 @@ export default {
       )
         .then((response) => response.json())
         .then((data) => {
-          this.ideaId = data.id;          
+          this.ideaId = data.id;
           this.updateAlert = true;
           document.location.reload(true);
         });
