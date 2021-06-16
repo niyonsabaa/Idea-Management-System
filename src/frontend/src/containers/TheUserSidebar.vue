@@ -44,10 +44,10 @@
 </template>
 
 <script>
-import nav from './_nav'
+import nav from './_navUser'
 
 export default {
-  name: 'TheSidebar',
+  name: 'TheUserSidebar',
   nav,
   computed: {
     show () {

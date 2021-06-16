@@ -9,7 +9,8 @@ const state = {
   token:'',
   successRegistration:false,
   username:'',
-  userId:''
+  userId:'',
+  role:'User'
 }
 
 const mutations = {
@@ -37,6 +38,10 @@ const mutations = {
 
   setUserId(state,currentUserId){
     state.userId = currentUserId
+  },
+
+  setRole(state,currentRole){
+    state.role = currentRole
   },
 
   setSuccessRegistration(state){

@@ -108,7 +108,13 @@ export default {
       )
         .then((response) => response.json())
         .then((data) => {
-          this.$store.commit("setUserId",data.id);
+          for (var i = 0; i < data.roles.length; i++) {
+            if (data.roles[i].name == "Admin") {              
+              this.$store.commit("setRole", data.roles[i].name);              
+            }
+          }
+
+          this.$store.commit("setUserId", data.id);
         });
     },
   },

@@ -68,8 +68,7 @@ public class AttachmentRestController {
 	 @GetMapping("/download")
 	    public void download(@RequestParam("fileName") String fileName,
 	                         HttpServletResponse response) throws Exception{
-		 File file = new File(UPLOAD_DIR + fileName);
-	        
+		 File file = new File(UPLOAD_DIR + fileName);	        
 	        byte[] buffer = new byte[1024];
 	        BufferedInputStream bis = null;
 	        OutputStream os = null;	       

@@ -5,7 +5,7 @@
         <CAlert color="primary" closeButton>
           <h4>Your profile has been, successfully updated.</h4>
         </CAlert>
-      </div>
+      </div>      
       <CModal
         title="Edit Your Profile"
         :show.sync="profileModal"
@@ -194,7 +194,7 @@ export default {
       gender: "",
       country: "",
       profileModal: false,
-      profileAlert: false,
+      profileAlert: false,      
     };
   },
   mounted() {
