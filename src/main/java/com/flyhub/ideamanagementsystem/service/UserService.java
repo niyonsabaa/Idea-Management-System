@@ -6,7 +6,6 @@ import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.flyhub.ideamanagementsystem.DaO.RoleRepository;
 import com.flyhub.ideamanagementsystem.DaO.UserRepository;
 import com.flyhub.ideamanagementsystem.Entity.Country;
@@ -15,6 +14,9 @@ import com.flyhub.ideamanagementsystem.Entity.Postfix;
 import com.flyhub.ideamanagementsystem.Entity.Prefix;
 import com.flyhub.ideamanagementsystem.Entity.Role;
 import com.flyhub.ideamanagementsystem.Entity.User;
+import com.flyhub.ideamanagementsystem.exception.UserAlreadyExistsException;
+import com.flyhub.ideamanagementsystem.exception.UserNotFoundException;
+
 
 @Service
 public class UserService {
@@ -33,11 +35,16 @@ public class UserService {
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	public List<User> findAllUsers() {
-		return repo.findAll();
+		List<User> users = repo.findAll();
+		if(Objects.isNull(users)) {
+			throw new UserNotFoundException("No user found");
+		}
+		return users;
 	}
 
-	public User findUser(Long id) {
-		return repo.findById(id).get();
+	public User findUser(Long id) throws UserNotFoundException{
+		User user = repo.findById(id).orElseThrow(() -> new UserNotFoundException("User with id "+id+ " does not Exist"));			
+		return user;		
 	}
 
 	public User createUser(User user, Long genderId, Long countryId, Long postfixId, Long prefixId) {
@@ -49,7 +56,7 @@ public class UserService {
 		Postfix postfix = postfixService.findPostfix(postfixId);
 		Prefix prefix = prefixService.findPrefix(prefixId);
 		if (Objects.nonNull(registeredUser)) {
-			return null;
+			throw new UserAlreadyExistsException("User with Email "+user.getEmail()+" Already exists.");
 		}
 		user.setPassword(encodedPassword);
 		user.setGender(gender);
@@ -61,15 +68,11 @@ public class UserService {
 		return repo.save(savedUser);
 	}
 
-	public User updateUser(User user, Long genderId, Long countryId, Long postfixId, Long prefixId) {
-		User registeredUser = checkEmail(user.getEmail());
+	public User updateUser(User user, Long genderId, Long countryId, Long postfixId, Long prefixId) {		
 		Gender gender = genderService.findGender(genderId);
 		Country country = countryService.findCountry(countryId);
 		Postfix postfix = postfixService.findPostfix(postfixId);
-		Prefix prefix = prefixService.findPrefix(prefixId);
-		if (Objects.nonNull(registeredUser)) {
-			return null;
-		}		
+		Prefix prefix = prefixService.findPrefix(prefixId);		
 		user.setGender(gender);
 		user.setCountry(country);
 		user.setPostfix(postfix);
@@ -78,6 +81,9 @@ public class UserService {
 	}
 
 	public void deleteUser(Long id) {
+		if(Objects.isNull(findUser(id))) {
+			throw new UserNotFoundException("User with id "+id+" doesn't exist.");
+		}
 		repo.deleteById(id);
 	}
 
@@ -97,10 +103,14 @@ public class UserService {
 	}
 
 	public User findUserByUsername(String username) {
-		return repo.findByUsername(username);
+		User user = repo.findByUsername(username);
+		if(Objects.isNull(user)) {
+			throw new UserNotFoundException("User with username "+username+ " doesn't exist.");
+		}
+		return user;
 	}
 
-//creating user Account
+    //creating user Account
 	public User registerUser(String email, String password, String firstName, String lastName, Long genderId,
 			Long countryId, Long postfixId, Long prefixId, String username) {
 		String encodedPassword = encoder.encode(password);

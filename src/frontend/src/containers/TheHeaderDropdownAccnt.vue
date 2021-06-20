@@ -47,9 +47,9 @@ export default {
   },
   methods:{
     logout(){
-      sessionStorage.clear();
-      document.location.reload(true)
+      sessionStorage.clear();      
       this.$router.push("/") 
+      document.location.reload(true)
     },
     viewProfile(){      
       this.$router.push("/profile");

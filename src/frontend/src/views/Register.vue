@@ -1,6 +1,12 @@
 <template>
   <div class="d-flex align-items-center min-vh-100">
-    <CContainer fluid>      
+    <CContainer fluid>
+      <CModal title="Account Creation Failed" :show.sync="errorModal" color="danger">
+        <h6>Account Already exists, or the username is Already taken.</h6>        
+        <template #footer>
+          <br />
+        </template>
+      </CModal>
       <CCard class="mx-4 mb-0">
         <CCardBody class="p-4">
           <CForm @submit="registerUser()">
@@ -110,7 +116,9 @@
                 >
                 <br />
                 <CButton href="/" color="link"
-                  ><h5>Already have an account? Click here to login</h5></CButton
+                  ><h5>
+                    Already have an account? Click here to login
+                  </h5></CButton
                 >
               </CCol>
             </CRow>
@@ -137,8 +145,9 @@ export default {
       lName: "",
       country: "",
       password: "",
-      username: "",    
-      };
+      username: "",
+      errorModal:true
+    };
   },
   mounted() {
     const myHeaders = new Headers({
@@ -203,8 +212,11 @@ export default {
       )
         .then((response) => response.json())
         .then(() => {
-           this.$store.commit("setSuccessRegistration")
-           this.$router.push("/")
+          this.$store.commit("setSuccessRegistration");
+          this.$router.push("/");
+        })
+        .catch(() =>{
+          this.errorModal =true;
         });
     },
   },

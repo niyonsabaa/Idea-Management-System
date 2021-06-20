@@ -15,6 +15,7 @@
                 <CForm @submit="login">
                   <h1 class="text-center">Login</h1>
                   <h6 class="text-center">Log In to your account</h6>
+                  <h5 class="text-danger" v-if="showError">Invalid Credentials</h5>
                   <CInput
                     placeholder="Username"
                     v-model="username"
@@ -70,6 +71,7 @@ export default {
       username: "",
       password: "",
       decodedToken: "",
+      showError: false,
     };
   },
   methods: {
@@ -91,7 +93,8 @@ export default {
           this.$store.commit("setUsername", this.decodedToken.sub);
           this.setAuthId();
           this.$router.push("dashboard");
-        });
+        })
+        .catch(() => this.showError = true);
     },
 
     setAuthId() {
@@ -109,14 +112,15 @@ export default {
         .then((response) => response.json())
         .then((data) => {
           for (var i = 0; i < data.roles.length; i++) {
-            if (data.roles[i].name == "Admin") {              
-              this.$store.commit("setRole", data.roles[i].name);              
+            if (data.roles[i].name == "Admin") {
+              this.$store.commit("setRole", data.roles[i].name);
             }
           }
 
           this.$store.commit("setUserId", data.id);
         });
     },
+   
   },
 };
 </script>
