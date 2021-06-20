@@ -1,10 +1,13 @@
 package com.flyhub.ideamanagementsystem.service;
 
 import java.util.List;
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.flyhub.ideamanagementsystem.DaO.CountryRepository;
 import com.flyhub.ideamanagementsystem.Entity.Country;
+import com.flyhub.ideamanagementsystem.exception.CountryNotFoundException;
 @Service
 public class CountryService {
 	@Autowired
@@ -15,7 +18,8 @@ public class CountryService {
 	}
 	
 	public Country findCountry(Long id){
-		return countryRepo.findById(id).get();
+		return countryRepo.findById(id).orElseThrow(()-> 
+		new CountryNotFoundException("Country with id "+id+" doesn't exist.") );
 	}
 	
 	public Country createCountry(Country country) {
@@ -23,6 +27,8 @@ public class CountryService {
 	}
 	
 	public void deleteCountry(Long id) {
-		countryRepo.deleteById(id);
+		if(Objects.nonNull(findCountry(id))) {
+			countryRepo.deleteById(id);
+		}		
 	}
 }

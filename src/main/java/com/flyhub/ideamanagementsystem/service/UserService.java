@@ -35,10 +35,7 @@ public class UserService {
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	public List<User> findAllUsers() {
-		List<User> users = repo.findAll();
-		if(Objects.isNull(users)) {
-			throw new UserNotFoundException("No user found");
-		}
+		List<User> users = repo.findAll();		
 		return users;
 	}
 
@@ -81,10 +78,9 @@ public class UserService {
 	}
 
 	public void deleteUser(Long id) {
-		if(Objects.isNull(findUser(id))) {
-			throw new UserNotFoundException("User with id "+id+" doesn't exist.");
-		}
-		repo.deleteById(id);
+		if(Objects.nonNull(findUser(id))) {
+			repo.deleteById(id);
+		}		
 	}
 
 	public User login(String email, String password) {
