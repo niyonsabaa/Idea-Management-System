@@ -1,15 +1,13 @@
 package com.flyhub.ideamanagementsystem.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-
 import com.flyhub.ideamanagementsystem.DaO.CategoryRepository;
 import com.flyhub.ideamanagementsystem.Entity.Category;
-import com.flyhub.ideamanagementsystem.Entity.Gender;
+import com.flyhub.ideamanagementsystem.exception.CategoryNotFoundException;
 
 @Service
 public class CategoryService {
@@ -21,7 +19,8 @@ public class CategoryService {
 	}
 	
 	public Category findCategory(Long id){
-		return categoryRepo.findById(id).get();
+		return categoryRepo.findById(id).orElseThrow(()->
+		new CategoryNotFoundException("Category with id "+id+" doesn't exist."));
 	}
 	
 	public Category createCategory(Category category) {
@@ -29,6 +28,8 @@ public class CategoryService {
 	}
 	
 	public void deleteCategory(Long id) {
+		if(Objects.nonNull(findCategory(id))) {
         categoryRepo.deleteById(id);
+		}
     }
 }
