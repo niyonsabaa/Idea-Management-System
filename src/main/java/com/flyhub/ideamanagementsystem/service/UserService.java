@@ -105,6 +105,20 @@ public class UserService {
 		}
 		return user;
 	}
+	
+	public User makeAdmin(Long id) {
+		User user = findUser(id);
+		Role adminUser = roleRepo.findByName("Admin");
+		user.getRoles().addAll(Arrays.asList(adminUser));		
+		return repo.save(user);
+	}
+	
+	public User removeAdminRole(Long id) {
+		User user = findUser(id);
+		Role adminUser = roleRepo.findByName("Admin");
+		user.getRoles().remove(adminUser);		
+		return repo.save(user);		
+	}
 
     //creating user Account
 	public User registerUser(String email, String password, String firstName, String lastName, Long genderId,

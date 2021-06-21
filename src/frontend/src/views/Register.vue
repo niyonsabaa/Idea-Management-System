@@ -146,7 +146,7 @@ export default {
       country: "",
       password: "",
       username: "",
-      errorModal:true
+      errorModal:false
     };
   },
   mounted() {

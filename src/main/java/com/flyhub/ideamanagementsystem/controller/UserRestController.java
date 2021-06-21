@@ -59,11 +59,20 @@ public class UserRestController {
 			@RequestParam("countryId") Long countryId, @RequestParam("postfixId") Long postfixId,
 
 			@RequestParam("prefixId") Long prefixId) {
-		User oldUser = userService.findUser(id);		
+		User oldUser = userService.findUser(id);
 		user.setId(id);
 		user.setPassword(oldUser.getPassword());
 		user.setUsername(oldUser.getUsername());
 		user.setRoles(oldUser.getRoles());
 		return ResponseEntity.ok(this.userService.updateUser(user, genderId, countryId, postfixId, prefixId));
+	}
+
+	@PostMapping("/admin/{id}")
+	public User makeAdmin(@PathVariable("id") Long id) {
+		return userService.makeAdmin(id);
+	}
+	@PostMapping("/user/{id}")
+	public User removeAdminRole(@PathVariable("id") Long id) {
+		return userService.removeAdminRole(id);
 	}
 }

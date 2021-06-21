@@ -22,6 +22,46 @@
               <br />
             </template>
           </CModal>
+
+          <CModal
+            title="Make User Admin"
+            :show.sync="makeAdminModal"
+            color="success"
+          >
+            <h5>
+              Are you sure you want to make {{ prefix }} {{ firstName }}
+              {{ lastName }} an Admin?
+            </h5>
+            <div class="form-actions text-right">
+              <CButton @click="closeMakeAdminModal" color="danger">No</CButton>
+              <span style="margin-left: 10px" />
+              <CButton @click="makeAdmin" color="success">Yes</CButton>
+            </div>
+            <template #footer>
+              <br />
+            </template>
+          </CModal>
+
+          <CModal
+            title="Remove Admin Role from User"
+            :show.sync="removeAdminModal"
+            color="success"
+          >
+            <h5>
+              Are you sure you want to remove Admin Role from {{ prefix }}
+              {{ firstName }} {{ lastName }} ?
+            </h5>
+            <div class="form-actions text-right">
+              <CButton @click="closeRemoveAdminModal" color="danger"
+                >No</CButton
+              >
+              <span style="margin-left: 10px" />
+              <CButton @click="removeAdmin" color="success">Yes</CButton>
+            </div>
+            <template #footer>
+              <br />
+            </template>
+          </CModal>
           <CCardBody>
             <CDataTable
               :items="items"
@@ -83,6 +123,40 @@
                   >
                     Edit
                   </CButton>
+
+                  <span
+                    style="margin-left: 10px"
+                    v-if="!item.roles[1] && item.roles[0].name == 'User'"
+                  >
+                    <CButton
+                      color="primary"
+                      variant="outline"
+                      square
+                      size="sm"
+                      @click="loadMakeAdminModal(item, index)"
+                    >
+                      Make Admin
+                    </CButton>
+                  </span>
+
+                  <span
+                    style="margin-left: 5px"
+                    type="1"
+                    v-for="role in item.roles"
+                    :key="role.name"
+                  >
+                    <span span v-if="role.name == 'Admin'">
+                      <CButton
+                        color="primary"
+                        variant="outline"
+                        square
+                        size="sm"
+                        @click="loadRemoveAdminModal(item, index)"
+                      >
+                        Remove Admin Role
+                      </CButton>
+                    </span>
+                  </span>
 
                   <CModal
                     title="Update User"
@@ -227,6 +301,8 @@ export default {
       fields,
       deleteModal: false,
       updateModal: false,
+      makeAdminModal: false,
+      removeAdminModal: false,
       userId: "",
       firstName: "",
       lastName: "",
@@ -312,8 +388,32 @@ export default {
       this.updateModal = true;
     },
 
+    loadMakeAdminModal(item) {
+      this.userId = item.id;
+      this.firstName = item.firstName;
+      this.lastName = item.lastName;
+      this.prefix = item.prefix.prefixName;
+      this.makeAdminModal = true;
+    },
+
+    loadRemoveAdminModal(item) {
+      this.userId = item.id;
+      this.firstName = item.firstName;
+      this.lastName = item.lastName;
+      this.prefix = item.prefix.prefixName;
+      this.removeAdminModal = true;
+    },
+
     closeDeleteModal() {
       this.deleteModal = false;
+    },
+
+    closeMakeAdminModal() {
+      this.makeAdminModal = false;
+    },
+
+    closeRemoveAdminModal() {
+      this.removeAdminModal = false;
     },
     deleteUser() {
       const myHeaders = new Headers({
@@ -338,16 +438,6 @@ export default {
         Authorization: "Bearer " + this.$store.state.token,
       });
 
-      /* const requestOptions = {
-          method: "PUT",
-          headers: myHeaders,
-          body: {
-            email: "alexnewzniyo@gmail.com",
-            firstName: "Kwiringira",
-            lastName: "Alex",
-          },
-        }; */
-
       const requestOptions = {
         method: "PUT",
         headers: myHeaders,
@@ -366,6 +456,49 @@ export default {
         .then(() => {
           this.updateModal = false;
           this.updateAlert = true;
+          document.location.reload(true);
+        });
+    },
+
+    makeAdmin() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+      };
+
+      fetch(
+        `http://localhost:8080/api/v1/users/admin/${this.userId}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then(() => {
+          this.makeAdminModal = false;
+          document.location.reload(true);
+        });
+    },
+
+    removeAdmin() {
+      const myHeaders = new Headers({
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + this.$store.state.token,
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+      };
+      fetch(
+        `http://localhost:8080/api/v1/users/user/${this.userId}`,
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then(() => {
+          this.removeAdminModal = false;
           document.location.reload(true);
         });
     },

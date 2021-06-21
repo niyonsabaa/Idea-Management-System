@@ -2,8 +2,6 @@ package com.flyhub.ideamanagementsystem.Entity;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,10 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
 import javax.persistence.JoinColumn;
 
 @Entity
@@ -34,50 +30,34 @@ public class User {
 	private String firstName;
 	@Column(nullable = false, length = 20)
 	private String lastName;
-
 	@Column(name = "username", unique = true)
 	private String username;
-	
+
 	@ManyToOne(targetEntity = Gender.class, fetch = FetchType.LAZY)
-
 	@JoinColumn(name = "gender_id", nullable = false)
-
 	@OnDelete(action = OnDeleteAction.CASCADE)
-
 	private Gender gender;
 
 	@ManyToOne(targetEntity = Country.class, fetch = FetchType.LAZY)
-
 	@JoinColumn(name = "country_id", nullable = false)
-
 	@OnDelete(action = OnDeleteAction.CASCADE)
 
 	private Country country;
 
 	@ManyToOne(targetEntity = Postfix.class, fetch = FetchType.LAZY)
-
 	@JoinColumn(name = "postfix_id", nullable = false)
-
 	@OnDelete(action = OnDeleteAction.CASCADE)
-
 	private Postfix postfix;
-	
-	
+
 	@ManyToOne(targetEntity = Prefix.class, fetch = FetchType.LAZY)
-
 	@JoinColumn(name = "prefix_id", nullable = false)
-
 	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Prefix prefix;
 
-	private Prefix prefix;	
-
-	// many to many relationships between the User and Role
-	@ManyToMany( fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<Role> roles = new HashSet<>();
-
-	
 
 	public String getEmail() {
 		return email;
@@ -148,7 +128,7 @@ public class User {
 	}
 
 	public void setCountry(Country country) {
-		this.country= country;
+		this.country = country;
 	}
 
 	public Set<Role> getRoles() {
@@ -159,21 +139,23 @@ public class User {
 		this.roles = roles;
 	}
 
-	
-	  public String getUsername() { return username; }
-	  
-	  public void setUsername(String username) { this.username = username; }
-	 
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
 	public User() {
 	}
 
-	public User(String email, String password, String firstName, String lastName,String username) {
-        this.email= email;
+	public User(String email, String password, String firstName, String lastName, String username) {
+		this.email = email;
 		this.password = password;
 		this.firstName = firstName;
-		this.lastName = lastName;		
+		this.lastName = lastName;
 		this.username = username;
-	}	
+	}
 
 }
